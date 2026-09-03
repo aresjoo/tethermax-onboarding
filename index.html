@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
-/* ═══════════════ design-tokens (유일한 값 출처 — TETHERMAX_UI_AUDIT.md 실측) ═══════════════ */
+/* ═══════════════ design-tokens (유일한 값 출처.TETHERMAX_UI_AUDIT.md 실측) ═══════════════ */
 :root{
   --bg:#121721;
   --surface:#1D2028;
@@ -25,7 +25,7 @@
   --gold:#F5C36A;
   --green:#00A68A;
   --error:#F44336;
-  /* surface states — Gemini식: hover는 “지면이 드러나는” 은은한 밝기 */
+  /* surface states.Gemini식: hover는 “지면이 드러나는” 은은한 밝기 */
   --surface-hover:rgba(255,255,255,.045);
   --surface-pressed:rgba(255,255,255,.07);
   --surface-selected:rgba(36,83,240,.14);
@@ -39,7 +39,7 @@
   --ic-sm:16px; --ic-md:20px;
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-7:28px; --sp-8:32px;
   --pad:20px;
-  /* motion — CSS 씬 레이어 전용 (터치 물성은 JS Spring이 담당) */
+  /* motion.CSS 씬 레이어 전용 (터치 물성은 JS Spring이 담당) */
   --mo-fast:120ms; --mo-normal:200ms; --mo-slow:280ms;
   --ease:cubic-bezier(.2,.8,.2,1);
   --ease-enter:cubic-bezier(.16,1,.3,1);
@@ -58,7 +58,7 @@ input{font-family:inherit;color:inherit}
 .btn-p:focus-visible,#support:focus-visible{outline-color:rgba(255,255,255,.85)} /* 브랜드 지면 위에서도 링이 보이게 */
 .num{font-variant-numeric:tabular-nums}
 /* phone frame */
-/* app shell — 고정 크롬(헤더·탭바·시트 앵커) + 내부 스크롤 콘텐츠 */
+/* app shell. 고정 크롬(헤더·탭바·시트 앵커) + 내부 스크롤 콘텐츠 */
 #app{position:relative;max-width:390px;margin:0 auto;height:100dvh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 @media(min-width:431px){ #app{border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06);box-shadow:0 0 60px rgba(0,0,0,.5)} }
 /* header */
@@ -87,7 +87,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .tl.in{transform:none;opacity:1}
 .glow{position:absolute;left:50%;top:38%;width:340px;height:340px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(36,83,240,.32),rgba(36,83,240,0) 68%);animation:breathe 4s ease-in-out infinite;pointer-events:none}
 @keyframes breathe{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
-/* ═ motion: 토스 그래픽 — 살아있는 기프트 ═ */
+/* ═ motion: 토스 그래픽. 살아있는 기프트 ═ */
 #gift{width:96px;height:96px;transform-origin:50% 100%;cursor:pointer}
 #gift.idle{animation:giftIdle 3s ease-in-out infinite}
 @keyframes giftIdle{0%,100%{transform:scale(1)}50%{transform:scale(1.018,0.985)}}
@@ -118,7 +118,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .amt-hero>span{font-size:17px;font-weight:600;color:var(--text-2)}
 .amt-row{font-size:15px;font-weight:700}
 .amt-row i{font-style:normal;font-size:11px;font-weight:400;color:var(--text-3);margin-left:3px}
-/* list row — 카드 대신 쓰는 기본 데이터/액션 단위 */
+/* list row. 카드 대신 쓰는 기본 데이터/액션 단위 */
 .lrow{display:flex;align-items:center;gap:var(--sp-3);width:calc(100% + 16px);margin:0 -8px;min-height:60px;padding:10px 8px;text-align:left;border-radius:8px;transition:background var(--mo-fast) var(--ease)}
 .lgroup .lrow+.lrow{border-top:1px solid var(--line)}
 @media(hover:hover){ button.lrow:hover{background:var(--surface-hover)} }
@@ -129,7 +129,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .lrow .tr{flex-shrink:0;display:flex;align-items:center;gap:8px;text-align:right}
 .lrow.new{animation:rowin .4s var(--ease)}
 .chev{color:var(--text-3);flex-shrink:0}
-/* ═ hero 3D scene — 미니 제품 필름: 차트→체결→적립→페이백→잔고 ═ */
+/* ═ hero 3D scene. 미니 제품 필름: 차트→체결→적립→페이백→잔고 ═ */
 .hero-card{background:linear-gradient(180deg,#1E222C,#181C26);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:0 0 22px;margin-top:var(--sp-5);overflow:hidden}
 .hscene{position:relative;height:200px;perspective:900px;margin:8px 8px 0}
 .hstage{position:absolute;inset:0;transform-style:preserve-3d}
@@ -165,7 +165,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .card+.card{margin-top:var(--sp-3)}
 button.card{transition:background var(--mo-fast) var(--ease)}
 @media(hover:hover){ button.card:hover{background:var(--surface-2)} }
-/* buttons — 상태: rest/hover/pressed(스프링)/focus/disabled. hover는 지면이 드러나는 정도만 */
+/* buttons. 상태: rest/hover/pressed(스프링)/focus/disabled. hover는 지면이 드러나는 정도만 */
 .btn{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;height:var(--h-btn);border-radius:var(--r-btn);font-size:var(--fs-btn);font-weight:500;transition:background var(--mo-fast) var(--ease),color var(--mo-fast) var(--ease)}
 .btn-p{background:var(--brand);color:#fff}
 .btn-p:disabled{background:var(--surface-2);color:var(--text-3);cursor:default}
@@ -286,7 +286,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
       <div class="rv" style="margin-top:var(--sp-7)">
         <div class="h2">지금도 누군가 받고 있어요</div>
         <div class="lgroup" id="live-rows" style="margin-top:6px"></div>
-        <button class="lrow" onclick="toast('데모 화면에서는 채널이 열리지 않아요 — 실제 앱에서 연결돼요')">
+        <button class="lrow" onclick="toast('데모 화면에서는 채널이 열리지 않아요. 실제 앱에서 연결돼요')">
           <span class="li" style="background:var(--surface-2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3L2 10l6 3M22 3l-4 17-7-6M22 3L8 13"/></svg></span>
           <span class="lt"><span class="t">방금 받은 내역이 올라와요</span><span class="s">텔레그램 실시간 채널</span></span>
           <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
@@ -336,7 +336,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
           <div class="help">보통 6자리 이상 숫자예요</div>
           <div class="errmsg" id="uid-err"></div>
         </div>
-        <div class="safe"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>조회만 해요 — 출금 권한은 요청하지 않아요</div>
+        <div class="safe"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>조회만 해요. 출금 권한은 요청하지 않아요</div>
         <div class="btn-row"><button class="btn btn-p" id="uid-submit" disabled onclick="submitUid()">UID 연결하기</button></div>
       </div>
       <div id="uid-loading" class="loading-view" style="display:none">
@@ -346,11 +346,11 @@ button.card{transition:background var(--mo-fast) var(--ease)}
       <div id="uid-noref" style="display:none;flex:1;flex-direction:column;justify-content:center;text-align:center">
         <div style="width:52px;height:52px;border-radius:50%;background:var(--surface);margin:0 auto 18px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg></div>
         <div class="h2">이 계정은 추천 코드 없이<br>가입된 계정이에요</div>
-        <div class="sub" style="margin-top:10px">괜찮아요 — 3분이면 새 계정으로 받을 수 있어요</div>
+        <div class="sub" style="margin-top:10px">괜찮아요.3분이면 새 계정으로 받을 수 있어요</div>
         <div class="btn-row">
           <button class="btn btn-p" onclick="S.pickMode='signup';go('d1')">새 계정 만들러 가기</button>
           <button class="btn btn-s" onclick="showUidForm()">다른 UID 입력하기</button>
-          <button class="btn-t" style="margin:4px auto 0" onclick="toast('고객센터는 24시간 열려 있어요 — 실제 앱에서 연결돼요')">고객센터에 물어보기</button>
+          <button class="btn-t" style="margin:4px auto 0" onclick="toast('고객센터는 24시간 열려 있어요. 실제 앱에서 연결돼요')">고객센터에 물어보기</button>
         </div>
       </div>
     </section>
@@ -383,7 +383,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
     <section class="view" id="v-d2">
       <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
         <div class="h1">가입하고 오셨나요?</div>
-        <div class="sub" style="margin-top:10px">천천히 하셔도 돼요 — 여기서 기다리고 있을게요</div>
+        <div class="sub" style="margin-top:10px">천천히 하셔도 돼요. 여기서 기다리고 있을게요</div>
         <div class="btn-row" style="margin-top:28px">
           <button class="btn btn-p" onclick="go('uid')">가입 완료했어요, UID 연결하기</button>
           <button class="btn btn-s" onclick="go('d1',true)">아직이에요</button>
@@ -395,12 +395,12 @@ button.card{transition:background var(--mo-fast) var(--ease)}
   <!-- tabbar -->
   <nav id="tabbar" aria-label="탭바(미리보기)">
     <button class="on"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg></span>홈</button>
-    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M17 6.5C17 5 15 4 12 4s-5 1-5 2.5S9 9 12 9s5 1 5 2.5S15 14 12 14s-5-1-5-2.5"/><circle cx="12" cy="12" r="9.5" stroke-opacity=".4"/></svg></span>페이백</button>
-    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8s-1-4-4-4-3 4 0 4h4zm0 0s1-4 4-4 3 4 0 4h-4z"/></svg></span>혜택</button>
-    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>전체</button>
+    <button onclick="toast('미리보기 버전이에요. 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M17 6.5C17 5 15 4 12 4s-5 1-5 2.5S9 9 12 9s5 1 5 2.5S15 14 12 14s-5-1-5-2.5"/><circle cx="12" cy="12" r="9.5" stroke-opacity=".4"/></svg></span>페이백</button>
+    <button onclick="toast('미리보기 버전이에요. 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8s-1-4-4-4-3 4 0 4h4zm0 0s1-4 4-4 3 4 0 4h-4z"/></svg></span>혜택</button>
+    <button onclick="toast('미리보기 버전이에요. 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>전체</button>
   </nav>
 
-  <button id="support" aria-label="고객센터" onclick="toast('고객센터는 24시간 열려 있어요 — 실제 앱에서 연결돼요')">
+  <button id="support" aria-label="고객센터" onclick="toast('고객센터는 24시간 열려 있어요. 실제 앱에서 연결돼요')">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/><path d="M19 19a4 4 0 0 1-4 2h-2"/></svg>
   </button>
 
@@ -413,7 +413,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
     <div class="sub" style="margin-top:8px">추천 코드로 가입된 계정만 페이백을 받을 수 있어요</div>
     <div class="btn-row">
       <button class="btn btn-p" onclick="closeTopSheet();S.pickMode='link';save();go('pick')">있어요, 연결할게요</button>
-      <button class="btn btn-s" onclick="closeTopSheet();S.pickMode='signup';save();go('pick')">아직 없어요 — 3분이면 만들 수 있어요</button>
+      <button class="btn btn-s" onclick="closeTopSheet();S.pickMode='signup';save();go('pick')">아직 없어요.3분이면 만들 수 있어요</button>
     </div>
   </div>
 
@@ -439,7 +439,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
       <div style="display:flex;justify-content:space-between;font-size:14px;margin-top:10px"><span class="sub">출금 기준</span><b class="num">10 USDT 이상</b></div>
     </div>
     <div class="sub" style="margin-top:14px">가입 보너스는 거래 페이백이 쌓이면 함께 출금돼요. 첫 거래부터 페이백이 자동으로 쌓여요.</div>
-    <div class="btn-row"><button class="btn btn-p" onclick="closeTopSheet();toast('거래소는 실제 앱에서 열려요 — 거래하면 페이백이 자동으로 쌓여요')">거래하고 페이백 쌓기</button></div>
+    <div class="btn-row"><button class="btn btn-p" onclick="closeTopSheet();toast('거래소는 실제 앱에서 열려요. 거래하면 페이백이 자동으로 쌓여요')">거래하고 페이백 쌓기</button></div>
   </div>
 
   <div class="sheet" id="sh-notif" role="dialog" aria-modal="true">
@@ -493,7 +493,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
 
 <script>
 "use strict";
-/* ═══════════════ motion core — 토스 스프링(만지면) + 제미나이 씬(바라보면) ═══════════════
+/* ═══════════════ motion core. 토스 스프링(만지면) + 제미나이 씬(바라보면) ═══════════════
    원칙: 모든 터치 반응은 물리 스프링(인터럽터블), 씬 연출은 CSS 커브. duration으로 붙는 트윈 없음. */
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SPR={bouncy:{s:190,d:13},smooth:{s:230,d:26},snappy:{s:520,d:30}};
@@ -515,7 +515,7 @@ function Spring(init,cfg,on){
   o.stop=()=>{ if(o._r)cancelAnimationFrame(o._r); o._r=null; };
   return o;
 }
-/* 슬롯 롤링 숫자 — 각 자릿수가 세로로 굴러 도착 (스프링 오버슛 포함) */
+/* 슬롯 롤링 숫자. 각 자릿수가 세로로 굴러 도착 (스프링 오버슛 포함) */
 function slotRoll(el,str,delay){
   if(!el) return;
   if(REDUCED){ el.textContent=str; return; }
@@ -530,14 +530,14 @@ function slotRoll(el,str,delay){
     setTimeout(()=>sp.set(+ch),(delay||0)+i*80);
   });
 }
-/* 전역 버튼 프레스 — pointerdown 즉시 눌리고, 떼면 스프링 복귀 */
+/* 전역 버튼 프레스.pointerdown 즉시 눌리고, 떼면 스프링 복귀 */
 const pressMap=new WeakMap();
 function pressSpring(b){ let sp=pressMap.get(b); if(!sp){ sp=Spring(1,SPR.snappy,v=>b.style.transform='scale('+v.toFixed(4)+')'); pressMap.set(b,sp); } return sp; }
 document.addEventListener('pointerdown',e=>{ const b=e.target.closest('button'); if(b&&!b.disabled&&!REDUCED) pressSpring(b).set(.965); },{passive:true});
 ['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,()=>{
   document.querySelectorAll('button').forEach(b=>{ const sp=pressMap.get(b); if(sp&&sp.t!==1) sp.set(1); });
 },{passive:true}));
-/* FLIP — 리스트가 밀려날 때 순간이동 대신 미끄러짐 */
+/* FLIP. 리스트가 밀려날 때 순간이동 대신 미끄러짐 */
 function flip(container,mutate){
   if(REDUCED){ mutate(); return; }
   const kids=[...container.children];
@@ -551,7 +551,7 @@ function flip(container,mutate){
     sp.done=()=>k.style.transform=''; sp.set(0);
   });
 }
-/* 타입 리베일 — 문장이 줄 단위로 마스크에서 올라옴 */
+/* 타입 리베일. 문장이 줄 단위로 마스크에서 올라옴 */
 function typeReveal(el){
   if(!el) return;
   el.querySelectorAll('.tl').forEach((l,i)=>{
@@ -559,7 +559,7 @@ function typeReveal(el){
     setTimeout(()=>l.classList.add('in'),20); /* rAF 정지(백그라운드) 상황에서도 반드시 표시 */
   });
 }
-/* 젤리 — 눌린 물성 (squash & stretch, 부피 보존 느낌) */
+/* 젤리. 눌린 물성 (squash & stretch, 부피 보존 느낌) */
 function jelly(el,amount){
   if(!el||REDUCED) return;
   const sp=Spring(1-(amount||0.12),SPR.bouncy,v=>el.style.transform='scale('+(2-v).toFixed(4)+','+v.toFixed(4)+')');
@@ -573,7 +573,7 @@ function initReveals(){
   const io=new IntersectionObserver(es=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add('rv-in'); io.unobserve(x.target); } }),{threshold:.12});
   els.forEach(e=>io.observe(e));
 }
-/* 바텀시트 드래그 — 손가락 추종, 놓으면 속도 기반 닫힘/복귀 */
+/* 바텀시트 드래그. 손가락 추종, 놓으면 속도 기반 닫힘/복귀 */
 function initSheetDrag(){
   document.querySelectorAll('.sheet').forEach(sh=>{
     let sy=0,dy=0,drag=false,lt=0,vy=0;
@@ -596,7 +596,7 @@ function initSheetDrag(){
     }));
   });
 }
-/* 우주 패럴랙스 — 별밭은 콘텐츠보다 느리게 흐름 (내부 스크롤 컨테이너 기준) */
+/* 우주 패럴랙스. 별밭은 콘텐츠보다 느리게 흐름 (내부 스크롤 컨테이너 기준) */
 let _parRaf=null;
 function initParallax(){
   const sc=document.getElementById('views');
@@ -608,7 +608,7 @@ function initParallax(){
     });
   },{passive:true});
 }
-/* ═══════════════ mock service layer — fake delay는 여기에만 존재 ═══════════════ */
+/* ═══════════════ mock service layer.fake delay는 여기에만 존재 ═══════════════ */
 const EXCHANGES=[
   {id:'wooxpro',n:'WOO X Pro',r:93,c:'#0E0E0E'},{id:'binance',n:'Binance',r:50,c:'#B58A1F'},
   {id:'bybit',n:'Bybit',r:64,c:'#2B3139'},{id:'bitget',n:'Bitget',r:77,c:'#0A6E7C'},
@@ -617,6 +617,20 @@ const EXCHANGES=[
   {id:'lbank',n:'LBank',r:71,c:'#C7A23C'},{id:'bitunix',n:'Bitunix',r:75,c:'#1F7A4D'},
   {id:'htx',n:'HTX',r:54,c:'#1F5FBF'}
 ];
+/* 실제 거래소 로고 (공식 파트너 표기 — 메이저 5종 SVG 재현, 나머지는 이니셜) */
+const EXLOGO={
+  binance:{bg:'#14151A',svg:'<svg viewBox="0 0 24 24" fill="#F3BA2F"><path d="M12 3 15 6 12 9 9 6Z"/><path d="M12 9.4 14.6 12 12 14.6 9.4 12Z"/><path d="M12 15 15 18 12 21 9 18Z"/><path d="M6 9 9 12 6 15 3 12Z"/><path d="M18 9 21 12 18 15 15 12Z"/></svg>'},
+  bybit:{bg:'#15192A',svg:'<svg viewBox="0 0 24 24"><text x="12" y="14.4" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="6" font-weight="800" fill="#fff" letter-spacing=".3">BYB<tspan fill="#F7A600">I</tspan>T</text></svg>'},
+  bitget:{bg:'#000000',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="#0AE0E6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.6 3.4H9.8l5 5.2h-4"/><path d="M10.4 20.6h3.8l-5-5.2h4"/></svg>'},
+  okx:{bg:'#000000',svg:'<svg viewBox="0 0 24 24" fill="#fff"><rect x="4.6" y="4.6" width="4.8" height="4.8"/><rect x="14.6" y="4.6" width="4.8" height="4.8"/><rect x="9.6" y="9.6" width="4.8" height="4.8"/><rect x="4.6" y="14.6" width="4.8" height="4.8"/><rect x="14.6" y="14.6" width="4.8" height="4.8"/></svg>'},
+  gate:{bg:'#2354E6',svg:'<svg viewBox="0 0 24 24" fill="none"><path d="M12 4.8a7.2 7.2 0 1 0 7.2 7.2" stroke="#fff" stroke-width="4.4"/><rect x="13.4" y="9.4" width="5.2" height="5.2" fill="#17C784"/></svg>'},
+  wooxpro:{bg:'#0E0E0E',svg:'<svg viewBox="0 0 24 24"><text x="12" y="14.3" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="6.2" font-weight="800" fill="#fff" letter-spacing=".4">WOO</text></svg>'}
+};
+function exIcon(e,px){
+  const sz=px||36, inner=Math.round(sz*0.64), L=EXLOGO[e.id];
+  if(L) return '<span class="li" style="width:'+sz+'px;height:'+sz+'px;background:'+L.bg+'">'+L.svg.replace('<svg','<svg width="'+inner+'" height="'+inner+'"')+'</span>';
+  return '<span class="li" style="width:'+sz+'px;height:'+sz+'px;font-size:'+(sz<32?'11px':'14px')+';background:'+e.c+'">'+e.n[0]+'</span>';
+}
 const VOLS=[
   {label:'5천만 원 미만',sub:'가볍게 하는 편이에요',v:45},
   {label:'5천만 ~ 3억 원',sub:'꾸준히 하는 편이에요',v:180},
@@ -658,13 +672,13 @@ function toast(m){
   if(!REDUCED){ if(!t._sp) t._sp=Spring(90,SPR.bouncy,v=>t.style.transform='translateY('+v+'px)'); t._sp.jump(90); t._sp.set(0); }
   clearTimeout(t._h); t._h=setTimeout(()=>{ if(t._sp)t._sp.set(90); t.classList.remove('on'); },2800);
 }
-/* ═══════════════ router (hash) — 뒤로가기 = 브라우저 back ═══════════════ */
+/* ═══════════════ router (hash). 뒤로가기 = 브라우저 back ═══════════════ */
 const ROUTES=['home','w1','w2','w3','pick','uid','d1','d2'];
 function go(route,replace){
   if(replace) location.replace('#'+route); else location.hash=route;
 }
 function currentRoute(){ const h=location.hash.replace('#',''); return ROUTES.includes(h)?h:'home'; }
-/* 홈으로 — 이미 홈이면 직접 렌더, 아니면 라우터가 1회만 렌더 (이중 렌더 방지) */
+/* 홈으로. 이미 홈이면 직접 렌더, 아니면 라우터가 1회만 렌더 (이중 렌더 방지) */
 function goHome(){ if(currentRoute()==='home'){ render(); } else { go('home',true); } }
 let lastIdx=0, curView=null, lastPct=null, justCheck=-1;
 window.addEventListener('hashchange',render);
@@ -676,7 +690,7 @@ function render(){
   const prev=curView&&curView!==el&&curView.classList.contains('on')?curView:null;
   document.querySelectorAll('.view').forEach(v=>{ if(v!==el&&v!==prev){ v.classList.remove('on'); v.style.cssText=''; } });
   if(prev&&!REDUCED){
-    /* 토스식 push/pop — 나가는 화면은 밀려나며 딤, 들어오는 화면은 스프링 슬라이드 */
+    /* 토스식 push/pop. 나가는 화면은 밀려나며 딤, 들어오는 화면은 스프링 슬라이드 */
     const back=idx<lastIdx;
     if(prev._tx)prev._tx.stop(); if(el._tx)el._tx.stop();
     prev.style.position='absolute'; prev.style.inset='0'; prev.style.zIndex='2'; prev.style.background='var(--bg)';
@@ -695,7 +709,7 @@ function render(){
   lastIdx=idx;
   /* step 기억(중단 복귀) */
   if(['pick','uid','d1','d2'].includes(r)){ S.step=r; save(); } /* 홈 복귀 시에도 step 유지 → 이어서 하기 */
-  $('support').style.display=(r==='home')?'flex':'none'; /* FAB은 홈에서만 — 리스트 가림 방지 */
+  $('support').style.display=(r==='home')?'flex':'none'; /* FAB은 홈에서만. 리스트 가림 방지 */
   if(r==='home') renderHome();
   if(r==='w1') renderWizardEx();
   if(r==='w2') renderVols();
@@ -705,7 +719,7 @@ function render(){
   if(r==='d1') $('d1-go').textContent=exName()+' 가입하러 가기';
   $('views').scrollTo(0,0);
 }
-/* ═══════════════ H. 홈 — state-driven, 화면당 주인공 1명 ═══════════════ */
+/* ═══════════════ H. 홈.state-driven, 화면당 주인공 1명 ═══════════════ */
 const CHEV='<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
 function renderHome(){
   const hero=$('home-hero'), rows=$('home-rows');
@@ -731,7 +745,7 @@ function renderHome(){
           '<div style="font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1.3">거래할수록, 돌려받으세요</div>'+
           '<div class="sub" style="margin-top:8px">평소처럼 거래하면 수수료가 페이백으로 쌓여요.<br>지금 연결하면 <span class="gold">30 USDT</span>를 바로 드려요.</div>'+
           '<div class="btn-row"><button class="btn btn-p" onclick="openSheet(\'ask\')">페이백 시작하기</button>'+
-          '<div class="meta" style="text-align:center">조회만 해요 — 출금 권한은 요청하지 않아요</div></div>'+
+          '<div class="meta" style="text-align:center">조회만 해요. 출금 권한은 요청하지 않아요</div></div>'+
         '</div></div>';
     }
     R=S.tested
@@ -745,12 +759,12 @@ function renderHome(){
       '<div class="btn-row" style="margin-top:var(--sp-4)">'+
       (hasPB
         ?'<button class="btn btn-p" onclick="openSheet(\'withdraw\')">출금하기</button>'
-        :'<button class="btn btn-p" onclick="toast(\'거래소는 실제 앱에서 열려요 — 거래하면 페이백이 자동으로 쌓여요\')">거래하고 첫 페이백 받기</button>'+
-         '<div class="meta" style="text-align:center">거래하면 자동으로 쌓여요 — 따로 할 일은 없어요</div>')+
+        :'<button class="btn btn-p" onclick="toast(\'거래소는 실제 앱에서 열려요. 거래하면 페이백이 자동으로 쌓여요\')">거래하고 첫 페이백 받기</button>'+
+         '<div class="meta" style="text-align:center">거래하면 자동으로 쌓여요. 따로 할 일은 없어요</div>')+
       '</div></div>';
     R='';
     if(hasPB) R+='<div class="lrow"><span class="li" style="background:var(--brand-soft);color:var(--brand);font-size:18px;font-weight:600">+</span><span class="lt"><span class="t">첫 페이백 도착</span><span class="s">방금</span></span><span class="tr"><span class="amt-row num">+12.47<i>USDT</i></span></span></div>';
-    if(S.exchange) R+='<div class="lrow"><span class="li" style="background:'+S.exchange.c+'">'+S.exchange.n[0]+'</span><span class="lt"><span class="t">'+S.exchange.n+'</span><span class="s num">UID '+maskUid(S.uid||'68543217')+'</span></span><span class="tr"><span class="meta" style="color:var(--brand)">연결됨</span></span></div>';
+    if(S.exchange) R+='<div class="lrow">'+exIcon(S.exchange)+'<span class="lt"><span class="t">'+S.exchange.n+'</span><span class="s num">UID '+maskUid(S.uid||'68543217')+'</span></span><span class="tr"><span class="meta" style="color:var(--brand)">연결됨</span></span></div>';
     if(S.tested&&!hasPB) R+='<div class="lrow"><span class="lt"><span class="t">매달 <span class="num">'+S.predicted.toLocaleString()+' USDT</span> 예상</span><span class="s">내 거래량 기준이에요</span></span></div>';
     if(!hasPB) R+='<button class="lrow" onclick="openSheet(\'withdraw\')"><span class="lt"><span class="t">출금하기</span><span class="s">모은 페이백을 확인해요</span></span>'+CHEV+'</button>';
     R+='<button class="lrow" onclick="'+(S.notif==='on'?'notifOff()':'openSheet(\'notif\')')+'" aria-label="페이백 도착 알림 '+(S.notif==='on'?'끄기':'켜기')+'"><span class="lt"><span class="t">페이백 도착 알림</span><span class="s">'+(S.notif==='on'?'켜져 있어요':(S.notifDenied?'텔레그램 채널로도 받을 수 있어요':'도착하면 바로 알려드려요'))+'</span></span><span class="sw'+(S.notif==='on'?' on':'')+'" aria-hidden="true"></span></button>';
@@ -758,7 +772,7 @@ function renderHome(){
   hero.innerHTML=H; rows.innerHTML=R;
   if(!S.linked&&!resumable) heroSceneInit(); else hsStop();
 }
-/* ═══════════════ hero scene engine — 7~9s 스토리 루프 (차트→체결→적립→페이백→잔고) ═══════════════ */
+/* ═══════════════ hero scene engine.7~9s 스토리 루프 (차트→체결→적립→페이백→잔고) ═══════════════ */
 const HSVG='<svg viewBox="0 0 178 98" fill="none" aria-hidden="true">'+
   '<path d="M4 26h170M4 50h170M4 74h170" stroke="rgba(255,255,255,.05)"/>'+
   '<path d="M14 34v40M38 42v34M62 28v42M86 26v36M110 34v40M134 24v40M158 40v34" stroke="rgba(255,255,255,.14)" stroke-width="1.4"/>'+
@@ -777,7 +791,7 @@ function heroSceneInit(){
   hsStop();
   const card=$('hcard'); if(!card) return;
   if(REDUCED){ const c=$('hcash'); if(c) c.classList.add('on'); return; } /* 정지 프레임: 핵심 상태만 노출 */
-  /* 데스크톱 패럴랙스 — 최대 2~3도, 스프링 복귀 */
+  /* 데스크톱 패럴랙스. 최대 2~3도, 스프링 복귀 */
   if(matchMedia('(hover:hover)').matches){
     const stage=$('hstage'); let rx=0,ry=0;
     const apply=()=>stage.style.transform='rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
@@ -842,7 +856,7 @@ function resume(){
 function exGrid(elId,onPick,list){
   const L=list||EXCHANGES;
   $(elId).innerHTML='<div class="lgroup">'+L.map((e,i)=>
-    '<button class="lrow" data-i="'+i+'"><span class="li" style="background:'+e.c+'">'+e.n[0]+'</span>'+
+    '<button class="lrow" data-i="'+i+'">'+exIcon(e)+
     '<span class="lt"><span class="t">'+e.n+'</span></span>'+
     '<span class="tr"><span class="badge num">'+e.r+'%</span></span></button>').join('')+'</div>';
   $(elId).querySelectorAll('.lrow').forEach(b=>b.onclick=()=>onPick(L[+b.dataset.i]));
@@ -954,7 +968,7 @@ function celeDone(){
 }
 /* ═══════════════ D. 가입 왕복 ═══════════════ */
 function copyCode(btn){
-  const done=()=>{ btn.textContent='복사했어요'; setTimeout(()=>btn.textContent='코드 복사',1800); toast('추천 코드를 복사했어요 — 가입할 때 자동으로 입력돼요'); };
+  const done=()=>{ btn.textContent='복사했어요'; setTimeout(()=>btn.textContent='코드 복사',1800); toast('추천 코드를 복사했어요. 가입할 때 자동으로 입력돼요'); };
   try{ navigator.clipboard.writeText('TETHERMAX').then(done,done); }catch(e){ done(); }
 }
 function goSignup(){
@@ -965,8 +979,8 @@ function goSignup(){
 /* ═══════════════ 알림 ═══════════════ */
 function notifAllow(yes){
   closeTopSheet();
-  if(yes){ S.notif='on'; S.notifDenied=false; save(); toast('알림을 켰어요 — 첫 페이백 도착도 바로 알 수 있어요'); }
-  else { S.notifDenied=true; save(); toast('괜찮아요 — 텔레그램 채널로도 받아볼 수 있어요'); }
+  if(yes){ S.notif='on'; S.notifDenied=false; save(); toast('알림을 켰어요. 첫 페이백 도착도 바로 알 수 있어요'); }
+  else { S.notifDenied=true; save(); toast('괜찮아요. 텔레그램 채널로도 받아볼 수 있어요'); }
   renderHome();
 }
 function notifOff(){ S.notif='off'; save(); toast('알림을 껐어요'); renderHome(); }
@@ -1000,7 +1014,7 @@ function closeAllSheets(){
 /* ═══════════════ live payouts ═══════════════ */
 function payoutRow(p,isNew){
   return '<div class="lrow'+(isNew?' new':'')+'" style="min-height:52px;padding:8px 4px">'+
-    '<span class="li" style="width:28px;height:28px;font-size:11px;background:'+p.ex.c+'">'+p.ex.n[0]+'</span>'+
+    exIcon(p.ex,28)+
     '<span class="lt"><span class="s num" style="font-size:14px;color:var(--text-2);margin-top:0">'+p.uid+'</span></span>'+
     '<span class="tr"><span class="amt-row num">'+p.amt+'<i>USDT</i></span><span class="meta num" style="width:34px">'+p.t+'</span></span></div>';
 }
@@ -1040,7 +1054,7 @@ function demoPreset(k){
   if(k==='payback'){ demoPayback(); return; }
   save(); closeAllSheets(); goHome();
 }
-/* 첫 페이백 — 금액 칩이 위에서 잔고로 날아와 젤리 착지 후 잔고가 굴러 올라감 */
+/* 첫 페이백. 금액 칩이 위에서 잔고로 날아와 젤리 착지 후 잔고가 굴러 올라감 */
 function demoPayback(){
   if(!S.linked){ S.linked=true; S.bonus=30; S.balance=30; S.exchange=S.exchange||EXCHANGES[3]; S.uid=S.uid||'68543217'; }
   save(); closeAllSheets(); goHome();
@@ -1070,7 +1084,7 @@ function demoPayback(){
     setTimeout(()=>{ if(!landed){ chip.remove(); land(); } },2600); /* rAF 정지(백그라운드) 시에도 상태 착지 보증 */
   },80);
 }
-/* ═══════════════ cosmos — Gemini풍 인터랙티브 파티클 우주 (canvas 2D, 라이브러리 없음) ═══════════════ */
+/* ═══════════════ cosmos.Gemini풍 인터랙티브 파티클 우주 (canvas 2D, 라이브러리 없음) ═══════════════ */
 function Cosmos(canvas, opts){
   const o=Object.assign({count:1200, alpha:1, burst:false, holeW:70, holeH:100, cy:0.42}, opts);
   const ctx=canvas.getContext('2d');
@@ -1083,7 +1097,7 @@ function Cosmos(canvas, opts){
   function resize(){
     const r=host.getBoundingClientRect();
     dpr=Math.min(devicePixelRatio||1,2);
-    W=r.width; H=Math.min(r.height||innerHeight, innerHeight); /* 첫 화면 높이만 — 히어로처럼 스크롤과 함께 지나감 */
+    W=r.width; H=Math.min(r.height||innerHeight, innerHeight); /* 첫 화면 높이만. 히어로처럼 스크롤과 함께 지나감 */
     canvas.width=W*dpr; canvas.height=H*dpr;
     canvas.style.width=W+'px'; canvas.style.height=H+'px';
     ctx.setTransform(dpr,0,0,dpr,0,0);
