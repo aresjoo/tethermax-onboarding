@@ -43,6 +43,24 @@
    시트 드래그는 포인터 캡처 시퀀스 특성상 코드 검증(속도 0.55px/ms 또는 34% 초과 시 닫힘, 미만 시 스프링 복귀).
 8. 콘솔 에러 0. 저사양 자동 다운시프트(120프레임 창에서 40+ 슬로우 → 파티클 40% 감축) 탑재.
 
+## Iteration 5 — Gemini-grade 디자인 시스템 패스 (2026-09-03, V1→V2 2회 검수)
+V1 검수에서 식별·수정한 차이 (브리프 요구 10개 이상):
+1. **[치명] 시트가 #app 콘텐츠 하단에 앵커** — 긴 화면에서 뷰포트 밖에서 열림 → 앱 셸 재구축(#app h=100dvh overflow hidden + #views 내부 스크롤). 헤더/탭바 진짜 고정, 시트·토스트·플로팅 항상 프레임 안. 실화면 재검증 통과.
+2. `.btn:active{opacity:.85}` + JS 프레스 스프링 이중 피드백 → opacity 제거, 스프링 단일화.
+3. btn-s/paste/tabbar/support/exc/vchip/tg/card버튼 hover 부재 → `@media(hover:hover)`로 surface hover 전면(밝기 4~6%, "지면이 드러나는" 톤).
+4. 탭바 선택 상태가 색상뿐 → Gemini rail 원리로 선택 아이콘 뒤 soft pill(--surface-selected) + hover pill.
+5. 아이콘 stroke 1.8/2 혼재 → UI 아이콘 전부 1.8·round cap/join 통일(체크마크 2.4/16은 10px optical 보정으로 의도적 유지).
+6. 브랜드 버튼 focus ring이 파랑 위 파랑 → btn-p/#support는 white ring.
+7. z-index 7종 매직넘버 → --z-* 토큰. transition 9종 → --mo-fast/normal/slow + ease 3종.
+8. 로딩 뷰 2곳 중복 인라인 → .loading-view. 알림 버튼 인라인 재정의 → .btn-sm.
+9. 내부 스크롤바 거친 노출 → 4px thin 스타일링.
+10. 로고 히트영역 24px → 40px + 키보드(Enter/Space) 접근.
+11. 시트 Escape/포커스 이동·복원 부재 → 추가. dim/grip aria-hidden.
+12. 리듬 4-grid 이탈(14/18px) → --sp-* 스냅(실측 컴포넌트 내부값은 유지).
+13. typeReveal이 rAF 의존이라 백그라운드에서 텍스트 미표시 위험 → setTimeout으로 보증.
+14. 패럴랙스를 내부 스크롤 기준으로 재배선(-0.45x).
+V2 검수: 시트 인프레임 ✓ · 축하(버스트+기프트+리베일+슬롯) ✓ · 75%→칩 비행 캡처 ✓ → 100%+42.47+토스트 ✓ · 콘솔 에러 0.
+
 ## 실클릭 구동 로그 (전 분기)
 신규 홈(50%·체크리스트4·결핍 테이블 5행) ✓ → 위저드 3스텝(11거래소·규모4·계산 1.6s·
 예측 500 저장·홈 카드 치환) ✓ → ask 시트 2분기 ✓ → pick(연결/가입 모드 타이틀 분기) ✓ →

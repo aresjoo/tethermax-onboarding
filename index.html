@@ -25,12 +25,28 @@
   --gold:#F5C36A;
   --green:#00A68A;
   --error:#F44336;
+  /* surface states — Gemini식: hover는 “지면이 드러나는” 은은한 밝기 */
+  --surface-hover:rgba(255,255,255,.045);
+  --surface-pressed:rgba(255,255,255,.07);
+  --surface-selected:rgba(36,83,240,.14);
+  --overlay:rgba(0,0,0,.55);
   --font:"Wanted Sans Variable","Wanted Sans",Inter,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
   --fs-hero:28px; --fs-title:20px; --fs-body:16px; --fs-sub:14px; --fs-meta:12px;
-  --r-btn:4px; --r-card:12px; --r-chip:100px; --r-badge:6px;
+  --fs-label:13px; --fs-btn:15px; --fs-input:17px;
+  --r-btn:4px; --r-card:12px; --r-chip:100px; --r-badge:6px; --r-toast:8px; --r-sheet:16px;
   --h-btn:44px; --h-input:56px; --h-row:56px; --h-header:56px; --h-tab:56px;
+  --ctl-sm:36px; --ctl-md:44px; --ctl-lg:56px; --ctl-round:40px;
+  --ic-sm:16px; --ic-md:20px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-7:28px; --sp-8:32px;
   --pad:20px;
+  /* motion — CSS 씬 레이어 전용 (터치 물성은 JS Spring이 담당) */
+  --mo-fast:120ms; --mo-normal:200ms; --mo-slow:280ms;
   --ease:cubic-bezier(.2,.8,.2,1);
+  --ease-enter:cubic-bezier(.16,1,.3,1);
+  --ease-exit:cubic-bezier(.4,0,1,1);
+  --elev-sheet:0 -8px 32px rgba(0,0,0,.35);
+  --elev-float:0 6px 18px rgba(36,83,240,.4);
+  --z-float:19; --z-nav:20; --z-overlay:30; --z-sheet:31; --z-cele:35; --z-toast:40; --z-fly:45;
 }
 /* ═══════════════ base ═══════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -39,17 +55,22 @@ body{background:#0B0D12;font-family:var(--font);color:var(--text);font-size:var(
 button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
 input{font-family:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.btn-p:focus-visible,#support:focus-visible{outline-color:rgba(255,255,255,.85)} /* 브랜드 지면 위에서도 링이 보이게 */
 .num{font-variant-numeric:tabular-nums}
 /* phone frame */
-#app{position:relative;max-width:390px;margin:0 auto;min-height:100dvh;background:var(--bg);display:flex;flex-direction:column}
+/* app shell — 고정 크롬(헤더·탭바·시트 앵커) + 내부 스크롤 콘텐츠 */
+#app{position:relative;max-width:390px;margin:0 auto;height:100dvh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 @media(min-width:431px){ #app{border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06);box-shadow:0 0 60px rgba(0,0,0,.5)} }
 /* header */
-header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);position:sticky;top:0;background:rgba(18,23,33,.92);backdrop-filter:blur(8px);z-index:20}
-.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;letter-spacing:-.02em;user-select:none}
+header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);position:sticky;top:0;background:rgba(18,23,33,.92);backdrop-filter:blur(8px);z-index:var(--z-nav)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;letter-spacing:-.02em;user-select:none;min-height:40px;padding:0 var(--sp-2);margin-left:calc(var(--sp-2) * -1);border-radius:var(--r-btn);cursor:default}
 .logo svg{display:block}
 /* views */
-#views{flex:1;display:flex;flex-direction:column}
-.view{display:none;flex:1;flex-direction:column;padding:8px var(--pad) 96px}
+#views{flex:1;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent}
+#views::-webkit-scrollbar{width:4px}
+#views::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:100px}
+#views::-webkit-scrollbar-track{background:transparent}
+.view{display:none;flex:1;flex-direction:column;padding:var(--sp-2) var(--pad) 72px}
 .view.on{display:flex}
 /* ═ motion: 토스 레이어 ═ */
 .slot-col{display:inline-block;height:1em;overflow:hidden;vertical-align:top}
@@ -57,7 +78,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .slot-strip>span{display:block;height:1em;line-height:1em}
 #views{transition:transform .35s cubic-bezier(.2,.9,.3,1)}
 #views.g-pushed{transform:scale(.97)}
-.money-chip{position:absolute;z-index:45;transform:translate(-50%,-50%);background:var(--surface);border:1px solid var(--line-strong);color:var(--gold);font-weight:700;font-size:15px;padding:9px 14px;border-radius:100px;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none}
+.money-chip{position:absolute;z-index:var(--z-fly);transform:translate(-50%,-50%);background:var(--surface);border:1px solid var(--line-strong);color:var(--gold);font-weight:700;font-size:var(--fs-btn);padding:9px 14px;border-radius:var(--r-chip);box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none}
 /* ═ motion: 제미나이 레이어 ═ */
 .rv{opacity:0;transform:translateY(24px);transition:opacity .65s cubic-bezier(.2,.7,0,1),transform .65s cubic-bezier(.2,.7,0,1)}
 .rv.rv-in{opacity:1;transform:none}
@@ -91,23 +112,31 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .gold{color:var(--gold);font-weight:700}
 /* card */
 .card{background:var(--surface);border-radius:var(--r-card);padding:18px}
-.card+.card{margin-top:12px}
-/* buttons */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:var(--h-btn);border-radius:var(--r-btn);font-size:15px;font-weight:500;transition:background .15s,opacity .15s}
-.btn:active{opacity:.85}
+.card+.card{margin-top:var(--sp-3)}
+button.card{transition:background var(--mo-fast) var(--ease)}
+@media(hover:hover){ button.card:hover{background:var(--surface-2)} }
+/* buttons — 상태: rest/hover/pressed(스프링)/focus/disabled. hover는 지면이 드러나는 정도만 */
+.btn{position:relative;display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;height:var(--h-btn);border-radius:var(--r-btn);font-size:var(--fs-btn);font-weight:500;transition:background var(--mo-fast) var(--ease),color var(--mo-fast) var(--ease)}
 .btn-p{background:var(--brand);color:#fff}
-.btn-p:hover{background:var(--brand-hover)}
 .btn-p:disabled{background:var(--surface-2);color:var(--text-3);cursor:default}
 .btn-s{background:var(--surface);border:1px solid var(--line-strong);color:var(--text)}
-.btn-t{width:auto;height:36px;padding:0 8px;color:var(--text-2);font-size:var(--fs-sub);font-weight:500}
-.btn-t:hover{color:var(--text)}
-.btn-row{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.btn-t{width:auto;height:var(--ctl-sm);padding:0 var(--sp-2);color:var(--text-2);font-size:var(--fs-sub);font-weight:500;border-radius:var(--r-btn)}
+.btn-sm{width:auto;height:var(--ctl-sm);padding:0 14px;font-size:var(--fs-label);flex-shrink:0}
+.btn-row{display:flex;flex-direction:column;gap:10px;margin-top:var(--sp-5)}
+@media(hover:hover){
+  .btn-p:hover:not(:disabled){background:var(--brand-hover)}
+  .btn-s:hover{background:var(--surface-2)}
+  .btn-t:hover{color:var(--text);background:var(--surface-hover)}
+}
+/* icon button 프리미티브 (백버튼·헤더·기타 아이콘 단독 컨트롤) */
+.icon-btn{width:var(--ctl-round);height:var(--ctl-round);display:flex;align-items:center;justify-content:center;border-radius:50%;color:var(--text-2);transition:background var(--mo-fast) var(--ease),color var(--mo-fast) var(--ease)}
+@media(hover:hover){ .icon-btn:hover{background:var(--surface-hover);color:var(--text)} }
 /* rate badge */
 .badge{display:inline-flex;align-items:center;background:var(--brand);color:#fff;border-radius:var(--r-badge);padding:3px 7px;font-size:14px;font-weight:600}
 /* progress */
 .pbar{height:6px;border-radius:100px;background:var(--surface-2);overflow:hidden}
 .pbar i{display:block;height:100%;border-radius:100px;background:var(--brand)}
-.check{display:flex;flex-direction:column;margin-top:14px}
+.check{display:flex;flex-direction:column;margin-top:var(--sp-4)}
 .check .c-row{display:flex;align-items:center;gap:10px;min-height:34px;font-size:var(--fs-sub);color:var(--text-3)}
 .check .c-row.done{color:var(--text-2)}
 .check .c-row.now{color:var(--text);font-weight:600}
@@ -116,9 +145,10 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .c-row.now .c-ic{border-color:var(--brand)}
 .c-row.now .c-ic::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand)}
 /* exchange grid */
-.exg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
-.exc{background:var(--surface);border-radius:var(--r-card);padding:16px 14px;display:flex;flex-direction:column;gap:10px;border:1px solid transparent;transition:border-color .15s;text-align:left}
+.exg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:var(--sp-4)}
+.exc{background:var(--surface);border-radius:var(--r-card);padding:16px 14px;display:flex;flex-direction:column;gap:10px;border:1px solid transparent;transition:border-color var(--mo-fast) var(--ease),background var(--mo-fast) var(--ease);text-align:left}
 .exc:active{border-color:var(--brand)}
+@media(hover:hover){ .exc:hover{background:var(--surface-2)} }
 .exc .top{display:flex;align-items:center;gap:9px}
 .exi{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
 .exc .nm{font-size:15px;font-weight:600}
@@ -128,10 +158,12 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .field{margin-top:20px}
 .field label{display:block;font-size:var(--fs-sub);color:var(--text-2);margin-bottom:8px}
 .inp{position:relative}
-.inp input{width:100%;height:var(--h-input);border-radius:var(--r-btn);background:var(--bg);border:1px solid var(--line-strong);padding:0 92px 0 14px;font-size:17px;outline:none;letter-spacing:.02em}
+.inp input{width:100%;height:var(--h-input);border-radius:var(--r-btn);background:var(--bg);border:1px solid var(--line-strong);padding:0 92px 0 14px;font-size:var(--fs-input);outline:none;letter-spacing:.02em;transition:border-color var(--mo-fast) var(--ease)}
+@media(hover:hover){ .inp input:hover:not(:focus){border-color:rgba(255,255,255,.35)} }
 .inp input:focus{border-color:var(--brand)}
 .inp input.err{border-color:var(--error)}
-.inp .paste{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:36px;padding:0 12px;border-radius:var(--r-btn);background:var(--surface-2);font-size:13px;font-weight:500;color:var(--text-2)}
+.inp .paste{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:var(--ctl-sm);padding:0 12px;border-radius:var(--r-btn);background:var(--surface-2);font-size:var(--fs-label);font-weight:500;color:var(--text-2);transition:background var(--mo-fast) var(--ease),color var(--mo-fast) var(--ease)}
+@media(hover:hover){ .inp .paste:hover{background:#2B3040;color:var(--text)} }
 .field .help{margin-top:8px;font-size:var(--fs-meta);color:var(--text-3)}
 .field .errmsg{margin-top:8px;font-size:13px;color:var(--error);line-height:1.5;display:none}
 .field .errmsg.on{display:block}
@@ -145,28 +177,35 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .trow .st{display:flex;align-items:center;gap:4px;justify-content:flex-end;color:var(--brand);font-size:12px}
 .trow .st i{width:5px;height:5px;border-radius:50%;background:var(--brand)}
 /* telegram banner */
-.tg{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:var(--r-card);padding:14px 16px;margin-top:12px}
-.tg .ic{width:38px;height:38px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tg{display:flex;align-items:center;gap:var(--sp-3);background:var(--surface);border-radius:var(--r-card);padding:14px 16px;margin-top:var(--sp-3);transition:background var(--mo-fast) var(--ease)}
+@media(hover:hover){ .tg:hover{background:var(--surface-2)} }
+.tg .ic{width:var(--ctl-round);height:var(--ctl-round);border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .tg .tx{flex:1;min-width:0}
 /* tabbar */
-#tabbar{position:sticky;bottom:0;height:calc(var(--h-tab) + env(safe-area-inset-bottom));background:rgba(18,23,33,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:20}
-#tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;color:var(--text-3)}
+#tabbar{position:sticky;bottom:0;height:calc(var(--h-tab) + env(safe-area-inset-bottom));background:rgba(18,23,33,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:var(--z-nav)}
+#tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;color:var(--text-3);transition:color var(--mo-fast) var(--ease)}
+#tabbar .pill{display:flex;align-items:center;justify-content:center;width:48px;height:26px;border-radius:var(--r-chip);transition:background var(--mo-fast) var(--ease)}
 #tabbar button.on{color:var(--brand)}
+#tabbar button.on .pill{background:var(--surface-selected)}
+@media(hover:hover){ #tabbar button:not(.on):hover{color:var(--text-2)} #tabbar button:not(.on):hover .pill{background:var(--surface-hover)} }
 #tabbar svg{stroke:currentColor}
 /* floating support */
-#support{position:absolute;right:16px;bottom:calc(var(--h-tab) + 16px + env(safe-area-inset-bottom));width:48px;height:48px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(36,83,240,.4);z-index:19}
+#support{position:absolute;right:var(--sp-4);bottom:calc(var(--h-tab) + 16px + env(safe-area-inset-bottom));width:48px;height:48px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;box-shadow:var(--elev-float);z-index:var(--z-float);transition:background var(--mo-fast) var(--ease)}
+@media(hover:hover){ #support:hover{background:var(--brand-hover)} }
 /* sheets */
-#dim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
+#dim{position:absolute;inset:0;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity var(--mo-normal) var(--ease);z-index:var(--z-overlay)}
 #dim.on{opacity:1;pointer-events:auto}
-.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:16px 16px 0 0;padding:24px var(--pad) calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .38s cubic-bezier(.22,1.12,.3,1);z-index:31;touch-action:none}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:var(--sp-6) var(--pad) calc(var(--sp-6) + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .38s cubic-bezier(.22,1.12,.3,1);z-index:var(--z-sheet);box-shadow:var(--elev-sheet);touch-action:none}
 .sheet.on{transform:none}
 .sheet .grip{width:36px;height:4px;border-radius:100px;background:var(--line-strong);margin:0 auto 18px}
 /* toast */
-#toast{position:absolute;left:16px;right:16px;bottom:calc(var(--h-tab) + 20px);background:#2A2E3A;border-radius:8px;padding:13px 16px;font-size:14px;transform:translateY(20px);opacity:0;transition:opacity .22s ease;z-index:40;pointer-events:none;line-height:1.45}
+#toast{position:absolute;left:var(--sp-4);right:var(--sp-4);bottom:calc(var(--h-tab) + 20px);background:#2A2E3A;border-radius:var(--r-toast);padding:13px 16px;font-size:var(--fs-sub);transform:translateY(20px);opacity:0;transition:opacity var(--mo-normal) var(--ease);z-index:var(--z-toast);pointer-events:none;line-height:1.45}
 #toast.on{transform:none;opacity:1}
 /* celebrate overlay */
-#cele{position:absolute;inset:0;background:var(--bg);z-index:35;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px}
+#cele{position:absolute;inset:0;background:var(--bg);z-index:var(--z-cele);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--sp-8)}
 #cele.on{display:flex}
+/* loading view (공용) */
+.loading-view{flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}
 /* loading dots */
 .ldots{display:inline-flex;gap:4px;vertical-align:middle}
 .ldots i{width:5px;height:5px;border-radius:50%;background:var(--text-3);animation:ld 1.2s infinite}
@@ -180,9 +219,10 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .luid .u{font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px}
 .luid .u i{width:5px;height:5px;border-radius:50%;background:var(--text-3)}
 /* volume chips */
-.vchips{display:flex;flex-direction:column;gap:10px;margin-top:18px}
-.vchip{background:var(--surface);border:1px solid transparent;border-radius:var(--r-card);padding:16px;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:border-color .15s}
+.vchips{display:flex;flex-direction:column;gap:10px;margin-top:var(--sp-4)}
+.vchip{background:var(--surface);border:1px solid transparent;border-radius:var(--r-card);padding:16px;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:border-color var(--mo-fast) var(--ease),background var(--mo-fast) var(--ease)}
 .vchip:active{border-color:var(--brand)}
+@media(hover:hover){ .vchip:hover{background:var(--surface-2)} }
 /* code card */
 .code-card{background:var(--surface);border-radius:var(--r-card);padding:20px;text-align:center;margin-top:20px}
 .code-card .code{font-size:26px;font-weight:700;letter-spacing:.14em;margin:6px 0 2px}
@@ -190,10 +230,9 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .wnav{display:flex;gap:10px;margin-top:auto;padding-top:20px}
 .wnav .btn{flex:1}
 /* back arrow row */
-.nav-row{display:flex;align-items:center;gap:6px;min-height:40px;margin:0 0 4px -8px}
-.nav-row button{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--text-2)}
+.nav-row{display:flex;align-items:center;gap:var(--sp-1);min-height:40px;margin:0 0 var(--sp-1) -8px}
 /* notice line */
-.safe{display:flex;align-items:flex-start;gap:7px;margin-top:14px;font-size:var(--fs-meta);color:var(--text-3);line-height:1.5}
+.safe{display:flex;align-items:flex-start;gap:var(--sp-2);margin-top:var(--sp-4);font-size:var(--fs-meta);color:var(--text-3);line-height:1.5}
 .safe svg{flex-shrink:0;margin-top:1px}
 /* pulse dot */
 .pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pu 1.8s infinite}
@@ -209,7 +248,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 <div id="app">
   <canvas class="fx" id="fx-home" aria-hidden="true"></canvas>
   <header>
-    <div class="logo" id="logo" role="button" aria-label="TetherMax">
+    <div class="logo" id="logo" role="button" tabindex="0" aria-label="TetherMax">
       <svg width="29" height="18" viewBox="0 0 32 20" fill="none" aria-hidden="true">
         <circle cx="10" cy="10" r="7" stroke="#fff" stroke-width="4.4"/>
         <circle cx="22" cy="10" r="7" stroke="#fff" stroke-width="4.4"/>
@@ -230,12 +269,12 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
         <div class="section-eyebrow">실시간 페이백</div>
         <div class="h2">지금도 누군가 받고 있어요</div>
         <div class="sub" style="margin-top:4px">쌓인 페이백을 한 푼도 빠짐없이 받아가세요</div>
-        <div class="tbl" style="margin-top:14px">
+        <div class="tbl" style="margin-top:16px">
           <div class="thead"><span>UID</span><span>거래소</span><span style="text-align:right">페이백</span><span style="text-align:right">상태</span></div>
           <div id="live-rows"></div>
         </div>
         <button class="tg" onclick="toast('데모 화면에서는 채널이 열리지 않아요 — 실제 앱에서 연결돼요')">
-          <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3L2 10l6 3M22 3l-4 17-7-6M22 3L8 13"/></svg></span>
+          <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3L2 10l6 3M22 3l-4 17-7-6M22 3L8 13"/></svg></span>
           <span class="tx"><span style="font-size:14px;font-weight:600;display:block">방금 받은 내역이 올라와요</span><span class="meta">텔레그램 실시간 페이백 채널</span></span>
           <span class="meta" style="color:var(--brand);font-weight:600;flex-shrink:0">채널 보기</span>
         </button>
@@ -244,18 +283,18 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 
     <!-- ═══ W. 페이백 테스트 위저드 ═══ -->
     <section class="view" id="v-w1">
-      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="meta">예상 페이백 확인 1/2</span></div>
+      <div class="nav-row"><button class="icon-btn" onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="meta">예상 페이백 확인 1/2</span></div>
       <div class="h1">먼저, 가장 자주 쓰는<br>거래소를 골라 주세요</div>
       <div class="exg" id="w-exg"></div>
     </section>
     <section class="view" id="v-w2">
-      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="meta">예상 페이백 확인 2/2</span></div>
+      <div class="nav-row"><button class="icon-btn" onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="meta">예상 페이백 확인 2/2</span></div>
       <div class="h1">한 달에 얼마나<br>거래하세요?</div>
       <div class="sub" style="margin-top:8px">대략이면 충분해요</div>
       <div class="vchips" id="w-vol"></div>
     </section>
     <section class="view" id="v-w3">
-      <div id="w3-loading" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px">
+      <div id="w3-loading" class="loading-view" style="display:flex">
         <div class="spin"></div>
         <div><div style="font-weight:600">페이백을 계산하고 있어요</div><div class="sub" style="margin-top:4px">거래소 수수료 기준으로 계산해요</div></div>
       </div>
@@ -264,7 +303,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 
     <!-- ═══ B. 거래소 선택 ═══ -->
     <section class="view" id="v-pick">
-      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+      <div class="nav-row"><button class="icon-btn" onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
       <div class="h1" id="pick-title">어느 거래소를<br>연결할까요?</div>
       <div class="sub" style="margin-top:8px" id="pick-sub">추천 코드로 가입한 거래소를 골라 주세요</div>
       <div class="exg" id="pick-exg"></div>
@@ -272,7 +311,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 
     <!-- ═══ C. UID 입력 ═══ -->
     <section class="view" id="v-uid">
-      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+      <div class="nav-row"><button class="icon-btn" onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
       <div id="uid-form">
         <div class="h1"><span id="uid-ex">거래소</span> UID를<br>알려주세요</div>
         <div class="sub" style="margin-top:8px">UID는 거래소 회원번호예요 <button class="btn-t" style="color:var(--brand);height:auto;padding:0 2px" onclick="openSheet('uidhelp')">어디서 보나요?</button></div>
@@ -284,15 +323,15 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
           <div class="help">보통 6자리 이상 숫자예요</div>
           <div class="errmsg" id="uid-err"></div>
         </div>
-        <div class="safe"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>조회만 해요 — 출금 권한은 요청하지 않아요</div>
+        <div class="safe"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>조회만 해요 — 출금 권한은 요청하지 않아요</div>
         <div class="btn-row"><button class="btn btn-p" id="uid-submit" disabled onclick="submitUid()">UID 연결하기</button></div>
       </div>
-      <div id="uid-loading" style="display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px">
+      <div id="uid-loading" class="loading-view" style="display:none">
         <div class="spin"></div>
         <div><div style="font-weight:600">거래소에 확인하고 있어요</div><div class="sub" style="margin-top:4px">10초면 끝나요</div></div>
       </div>
       <div id="uid-noref" style="display:none;flex:1;flex-direction:column;justify-content:center;text-align:center">
-        <div style="width:52px;height:52px;border-radius:50%;background:var(--surface);margin:0 auto 18px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg></div>
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--surface);margin:0 auto 18px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg></div>
         <div class="h2">이 계정은 추천 코드 없이<br>가입된 계정이에요</div>
         <div class="sub" style="margin-top:10px">괜찮아요 — 3분이면 새 계정으로 받을 수 있어요</div>
         <div class="btn-row">
@@ -305,7 +344,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 
     <!-- ═══ D-1. 가입 준비 ═══ -->
     <section class="view" id="v-d1">
-      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+      <div class="nav-row"><button class="icon-btn" onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
       <div class="h1">추천 코드를<br>복사해 두세요</div>
       <div class="sub" style="margin-top:8px">가입할 때 자동으로 입력돼요 · 복사해 두면 안심이에요</div>
       <div class="code-card">
@@ -342,10 +381,10 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 
   <!-- tabbar -->
   <nav id="tabbar" aria-label="탭바(미리보기)">
-    <button class="on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg>홈</button>
-    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M17 6.5C17 5 15 4 12 4s-5 1-5 2.5S9 9 12 9s5 1 5 2.5S15 14 12 14s-5-1-5-2.5"/><circle cx="12" cy="12" r="9.5" stroke-opacity=".4"/></svg>페이백</button>
-    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8s-1-4-4-4-3 4 0 4h4zm0 0s1-4 4-4 3 4 0 4h-4z"/></svg>혜택</button>
-    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>전체</button>
+    <button class="on"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg></span>홈</button>
+    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M17 6.5C17 5 15 4 12 4s-5 1-5 2.5S9 9 12 9s5 1 5 2.5S15 14 12 14s-5-1-5-2.5"/><circle cx="12" cy="12" r="9.5" stroke-opacity=".4"/></svg></span>페이백</button>
+    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8s-1-4-4-4-3 4 0 4h4zm0 0s1-4 4-4 3 4 0 4h-4z"/></svg></span>혜택</button>
+    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><span class="pill"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>전체</button>
   </nav>
 
   <button id="support" aria-label="고객센터" onclick="toast('고객센터는 24시간 열려 있어요 — 실제 앱에서 연결돼요')">
@@ -353,10 +392,10 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
   </button>
 
   <!-- dim + sheets -->
-  <div id="dim" onclick="closeTopSheet()"></div>
+  <div id="dim" onclick="closeTopSheet()" aria-hidden="true"></div>
 
   <div class="sheet" id="sh-ask" role="dialog" aria-modal="true">
-    <div class="grip"></div>
+    <div class="grip" aria-hidden="true"></div>
     <div class="h2">테더맥스 추천 코드로 가입한<br>거래소 계정이 있나요?</div>
     <div class="sub" style="margin-top:8px">추천 코드로 가입된 계정만 페이백을 받을 수 있어요</div>
     <div class="btn-row">
@@ -366,7 +405,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
   </div>
 
   <div class="sheet" id="sh-uidhelp" role="dialog" aria-modal="true">
-    <div class="grip"></div>
+    <div class="grip" aria-hidden="true"></div>
     <div class="h2">UID는 여기서 볼 수 있어요</div>
     <div class="sub" style="margin-top:8px">거래소 앱을 열고 프로필 화면 맨 위를 확인해 주세요</div>
     <div class="card" style="background:var(--bg);margin-top:16px">
@@ -380,7 +419,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
   </div>
 
   <div class="sheet" id="sh-withdraw" role="dialog" aria-modal="true">
-    <div class="grip"></div>
+    <div class="grip" aria-hidden="true"></div>
     <div class="h2">조금만 더 모으면<br>출금할 수 있어요</div>
     <div class="card" style="background:var(--bg);margin-top:16px">
       <div style="display:flex;justify-content:space-between;font-size:14px"><span class="sub">지금 잔고</span><b class="num">30.00 USDT</b></div>
@@ -391,7 +430,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
   </div>
 
   <div class="sheet" id="sh-notif" role="dialog" aria-modal="true">
-    <div class="grip"></div>
+    <div class="grip" aria-hidden="true"></div>
     <div style="text-align:center;padding:6px 0 2px">
       <div class="h2">TetherMax에서 알림을<br>보내려고 해요</div>
       <div class="sub" style="margin-top:8px">페이백이 도착하면 바로 알려드려요</div>
@@ -403,7 +442,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
   </div>
 
   <div class="sheet" id="sh-demo" role="dialog" aria-modal="true">
-    <div class="grip"></div>
+    <div class="grip" aria-hidden="true"></div>
     <div class="h2">데모 패널</div>
     <div class="meta" style="margin-top:6px">시연용 · UID 규칙: 9로 시작=추천 코드 미적용 · 00으로 끝=미등록 · 그 외=성공</div>
     <div class="btn-row">
@@ -503,7 +542,7 @@ function typeReveal(el){
   if(!el) return;
   el.querySelectorAll('.tl').forEach((l,i)=>{
     l.style.transitionDelay=(i*90)+'ms';
-    requestAnimationFrame(()=>requestAnimationFrame(()=>l.classList.add('in')));
+    setTimeout(()=>l.classList.add('in'),20); /* rAF 정지(백그라운드) 상황에서도 반드시 표시 */
   });
 }
 /* 젤리 — 눌린 물성 (squash & stretch, 부피 보존 느낌) */
@@ -543,15 +582,18 @@ function initSheetDrag(){
     }));
   });
 }
-/* 우주 패럴랙스 — 별밭은 콘텐츠보다 느리게 흐름 */
+/* 우주 패럴랙스 — 별밭은 콘텐츠보다 느리게 흐름 (내부 스크롤 컨테이너 기준) */
 let _parRaf=null;
-addEventListener('scroll',()=>{
-  if(_parRaf||REDUCED) return;
-  _parRaf=requestAnimationFrame(()=>{ _parRaf=null;
-    const c=document.getElementById('fx-home');
-    if(c) c.style.transform='translateY('+(scrollY*0.55).toFixed(1)+'px)';
-  });
-},{passive:true});
+function initParallax(){
+  const sc=document.getElementById('views');
+  sc.addEventListener('scroll',()=>{
+    if(_parRaf||REDUCED) return;
+    _parRaf=requestAnimationFrame(()=>{ _parRaf=null;
+      const c=document.getElementById('fx-home');
+      if(c) c.style.transform='translateY('+(-sc.scrollTop*0.45).toFixed(1)+'px)';
+    });
+  },{passive:true});
+}
 /* ═══════════════ mock service layer — fake delay는 여기에만 존재 ═══════════════ */
 const EXCHANGES=[
   {id:'wooxpro',n:'WOO X Pro',r:93,c:'#0E0E0E'},{id:'binance',n:'Binance',r:50,c:'#B58A1F'},
@@ -646,7 +688,7 @@ function render(){
   if(r==='pick') renderPick();
   if(r==='uid') { $('uid-ex').textContent=exName(); showUidForm(); }
   if(r==='d1') $('d1-go').textContent=exName()+' 가입하러 가기';
-  window.scrollTo(0,0);
+  $('views').scrollTo(0,0);
 }
 /* ═══════════════ H. 홈 ═══════════════ */
 function checklist(){
@@ -676,7 +718,7 @@ function renderHome(){
     cta='<button class="btn btn-p" style="margin-top:16px" onclick="openSheet(\'ask\')">계정 연결하기</button>';
   }
   box.innerHTML=
-    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><span class="meta">페이백 시작하기</span><b class="num" id="prog-pct" style="font-size:15px">'+p+'%</b></div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><span class="meta">페이백 시작하기</span><b class="num" id="prog-pct" style="font-size:var(--fs-btn)">'+p+'%</b></div>'+
     '<div class="pbar"><i id="prog-bar" style="width:'+(lastPct===null?p:lastPct)+'%"></i></div>'+
     checklist()+head+cta+
     (S.linked?balanceCard():'');
@@ -696,7 +738,7 @@ function renderHome(){
   } else {
     ts.innerHTML='<button class="card" style="width:100%;text-align:left;display:flex;align-items:center;gap:12px" onclick="go(\'w1\')">'+
       '<span style="flex:1"><span style="font-size:15px;font-weight:600;display:block">내 예상 페이백 확인하기</span><span class="meta">1분이면 돼요 · 지금 놓치는 금액도 알 수 있어요</span></span>'+
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>';
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>';
   }
   /* 알림 슬롯 (연동 후에만) */
   const ns=$('notif-slot');
@@ -706,7 +748,7 @@ function renderHome(){
   } else {
     ns.innerHTML='<div class="card" style="margin-top:12px;display:flex;align-items:center;gap:12px">'+
       '<span style="flex:1"><span style="font-size:15px;font-weight:600;display:block">페이백이 도착하면 알려드릴게요</span><span class="meta" id="notif-sub">'+(S.notifDenied?'알림 대신 텔레그램 채널로도 받아볼 수 있어요':'놓치지 않게 도착 즉시 알려드려요')+'</span></span>'+
-      '<button class="btn btn-p" style="width:auto;height:36px;padding:0 14px;font-size:13px;flex-shrink:0" onclick="openSheet(\'notif\')">알림 받기</button></div>';
+      '<button class="btn btn-p btn-sm" onclick="openSheet(\'notif\')">알림 받기</button></div>';
   }
 }
 function balanceCard(){
@@ -737,7 +779,7 @@ let wEx=null;
 function renderWizardEx(){ exGrid('w-exg',(e)=>{ wEx=e; go('w2'); }); }
 function renderVols(){
   if(!wEx) { go('w1',true); return; }
-  $('w-vol').innerHTML=VOLS.map((v,i)=>'<button class="vchip" data-i="'+i+'"><span><span style="font-size:15px;font-weight:600;display:block">'+v.label+'</span><span class="meta">'+v.sub+'</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>').join('');
+  $('w-vol').innerHTML=VOLS.map((v,i)=>'<button class="vchip" data-i="'+i+'"><span><span style="font-size:15px;font-weight:600;display:block">'+v.label+'</span><span class="meta">'+v.sub+'</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>').join('');
   $('w-vol').querySelectorAll('.vchip').forEach(b=>b.onclick=()=>{ wVol=+b.dataset.i; go('w3'); });
 }
 let wVol=1;
@@ -849,18 +891,26 @@ function notifAllow(yes){
 }
 /* ═══════════════ sheets ═══════════════ */
 const sheetStack=[];
+let sheetReturnFocus=null;
 function openSheet(id){
   const el=$('sh-'+id); if(!el) return;
+  if(!sheetStack.length) sheetReturnFocus=document.activeElement;
   el.classList.add('on'); $('dim').classList.add('on');
   $('views').classList.add('g-pushed'); /* 토스식: 뒤 화면이 살짝 물러남 */
   sheetStack.push(id);
+  const first=el.querySelector('button'); if(first) first.focus({preventScroll:true});
 }
 function closeTopSheet(){
   if(!sheetStack.length) return;
   const id=sheetStack.pop();
   $('sh-'+id).classList.remove('on');
-  if(!sheetStack.length){ $('dim').classList.remove('on'); $('views').classList.remove('g-pushed'); }
+  if(!sheetStack.length){
+    $('dim').classList.remove('on'); $('views').classList.remove('g-pushed');
+    if(sheetReturnFocus&&sheetReturnFocus.focus){ try{ sheetReturnFocus.focus({preventScroll:true}); }catch(_){} }
+    sheetReturnFocus=null;
+  }
 }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&sheetStack.length){ e.preventDefault(); closeTopSheet(); } });
 function closeAllSheets(){
   while(sheetStack.length){ const id=sheetStack.pop(); $('sh-'+id).classList.remove('on'); }
   $('dim').classList.remove('on'); $('views').classList.remove('g-pushed');
@@ -897,6 +947,7 @@ $('logo').addEventListener('click',()=>{
   tapCount++; clearTimeout(tapTimer); tapTimer=setTimeout(()=>tapCount=0,1600);
   if(tapCount>=5){ tapCount=0; openSheet('demo'); }
 });
+$('logo').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('logo').click(); } });
 function demoReset(){ localStorage.removeItem('tm_state'); location.hash=''; location.reload(); }
 function demoPreset(k){
   if(k==='tested'){ S.tested=true; S.predicted=500; }
@@ -1021,6 +1072,7 @@ if(!location.hash) location.replace('#home');
 render();
 initSheetDrag();
 initReveals();
+initParallax();
 $('gift').addEventListener('pointerdown',()=>{ const g=$('gift'); g.classList.remove('idle'); jelly(g,0.16); setTimeout(()=>g.classList.add('idle'),700); });
 </script>
 </body>
