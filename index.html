@@ -110,6 +110,30 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .sub{font-size:var(--fs-sub);color:var(--text-2);line-height:1.55}
 .meta{font-size:var(--fs-meta);color:var(--text-3)}
 .gold{color:var(--gold);font-weight:700}
+/* ═ Toss-grade primitives ═ */
+.hero{padding:var(--sp-6) 0 var(--sp-4)}
+.hero .eyebrow{font-size:var(--fs-label);font-weight:500;color:var(--text-3);margin-bottom:10px}
+.amt-hero{display:flex;align-items:baseline;gap:6px;margin-top:2px}
+.amt-hero b{font-size:40px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.amt-hero>span{font-size:17px;font-weight:600;color:var(--text-2)}
+.amt-row{font-size:15px;font-weight:700}
+.amt-row i{font-style:normal;font-size:11px;font-weight:400;color:var(--text-3);margin-left:3px}
+/* list row — 카드 대신 쓰는 기본 데이터/액션 단위 */
+.lrow{display:flex;align-items:center;gap:var(--sp-3);width:calc(100% + 16px);margin:0 -8px;min-height:60px;padding:10px 8px;text-align:left;border-radius:8px;transition:background var(--mo-fast) var(--ease)}
+.lgroup .lrow+.lrow{border-top:1px solid var(--line)}
+@media(hover:hover){ button.lrow:hover{background:var(--surface-hover)} }
+.lrow .li{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff}
+.lrow .lt{flex:1;min-width:0}
+.lrow .lt .t{font-size:15px;font-weight:600;display:block;line-height:1.4}
+.lrow .lt .s{font-size:var(--fs-label);color:var(--text-3);display:block;margin-top:1px}
+.lrow .tr{flex-shrink:0;display:flex;align-items:center;gap:8px;text-align:right}
+.lrow.new{animation:rowin .4s var(--ease)}
+.chev{color:var(--text-3);flex-shrink:0}
+/* switch */
+.sw{position:relative;width:40px;height:24px;border-radius:100px;background:var(--surface-2);transition:background var(--mo-normal) var(--ease);flex-shrink:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform var(--mo-normal) var(--ease)}
+.sw.on{background:var(--brand)}
+.sw.on::after{transform:translateX(16px)}
 /* card */
 .card{background:var(--surface);border-radius:var(--r-card);padding:18px}
 .card+.card{margin-top:var(--sp-3)}
@@ -133,9 +157,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
 @media(hover:hover){ .icon-btn:hover{background:var(--surface-hover);color:var(--text)} }
 /* rate badge */
 .badge{display:inline-flex;align-items:center;background:var(--brand);color:#fff;border-radius:var(--r-badge);padding:3px 7px;font-size:14px;font-weight:600}
-/* progress */
-.pbar{height:6px;border-radius:100px;background:var(--surface-2);overflow:hidden}
-.pbar i{display:block;height:100%;border-radius:100px;background:var(--brand)}
+/* checklist (D-1 가입 순서에서 사용) */
 .check{display:flex;flex-direction:column;margin-top:var(--sp-4)}
 .check .c-row{display:flex;align-items:center;gap:10px;min-height:34px;font-size:var(--fs-sub);color:var(--text-3)}
 .check .c-row.done{color:var(--text-2)}
@@ -144,16 +166,8 @@ button.card{transition:background var(--mo-fast) var(--ease)}
 .c-row.done .c-ic{border:none;background:var(--brand)}
 .c-row.now .c-ic{border-color:var(--brand)}
 .c-row.now .c-ic::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand)}
-/* exchange grid */
-.exg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:var(--sp-4)}
-.exc{background:var(--surface);border-radius:var(--r-card);padding:16px 14px;display:flex;flex-direction:column;gap:10px;border:1px solid transparent;transition:border-color var(--mo-fast) var(--ease),background var(--mo-fast) var(--ease);text-align:left}
-.exc:active{border-color:var(--brand)}
-@media(hover:hover){ .exc:hover{background:var(--surface-2)} }
-.exc .top{display:flex;align-items:center;gap:9px}
+/* exchange icon (시트 안내 등에서 사용) */
 .exi{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
-.exc .nm{font-size:15px;font-weight:600}
-.exc .rt{display:flex;align-items:center;justify-content:space-between}
-.exc .rt .meta{font-size:11px}
 /* input */
 .field{margin-top:20px}
 .field label{display:block;font-size:var(--fs-sub);color:var(--text-2);margin-bottom:8px}
@@ -167,19 +181,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
 .field .help{margin-top:8px;font-size:var(--fs-meta);color:var(--text-3)}
 .field .errmsg{margin-top:8px;font-size:13px;color:var(--error);line-height:1.5;display:none}
 .field .errmsg.on{display:block}
-/* table (실시간 지급) */
-.tbl{background:var(--surface);border-radius:var(--r-card);overflow:hidden}
-.tbl .thead{display:grid;grid-template-columns:1fr 64px 78px 52px;gap:4px;padding:10px 14px;background:var(--surface-2);font-size:11px;color:var(--text-3)}
-.trow{display:grid;grid-template-columns:1fr 64px 78px 52px;gap:4px;align-items:center;padding:0 14px;height:48px;border-top:1px solid var(--line);font-size:13px}
-.trow.new{animation:rowin .4s var(--ease)}
 @keyframes rowin{from{opacity:0;transform:translateY(-6px)}to{opacity:1}}
-.trow .amt{font-weight:600;text-align:right}
-.trow .st{display:flex;align-items:center;gap:4px;justify-content:flex-end;color:var(--brand);font-size:12px}
-.trow .st i{width:5px;height:5px;border-radius:50%;background:var(--brand)}
-/* telegram banner */
-.tg{display:flex;align-items:center;gap:var(--sp-3);background:var(--surface);border-radius:var(--r-card);padding:14px 16px;margin-top:var(--sp-3);transition:background var(--mo-fast) var(--ease)}
-@media(hover:hover){ .tg:hover{background:var(--surface-2)} }
-.tg .ic{width:var(--ctl-round);height:var(--ctl-round);border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .tg .tx{flex:1;min-width:0}
 /* tabbar */
 #tabbar{position:sticky;bottom:0;height:calc(var(--h-tab) + env(safe-area-inset-bottom));background:rgba(18,23,33,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:var(--z-nav)}
@@ -214,15 +216,6 @@ button.card{transition:background var(--mo-fast) var(--ease)}
 /* spin */
 .spin{width:44px;height:44px;border-radius:50%;border:3px solid var(--surface-2);border-top-color:var(--brand);animation:sp 1s linear infinite;margin:0 auto}
 @keyframes sp{to{transform:rotate(360deg)}}
-/* linked uid row */
-.luid{display:flex;align-items:center;gap:11px;padding:12px 0;border-top:1px solid var(--line)}
-.luid .u{font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px}
-.luid .u i{width:5px;height:5px;border-radius:50%;background:var(--text-3)}
-/* volume chips */
-.vchips{display:flex;flex-direction:column;gap:10px;margin-top:var(--sp-4)}
-.vchip{background:var(--surface);border:1px solid transparent;border-radius:var(--r-card);padding:16px;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:border-color var(--mo-fast) var(--ease),background var(--mo-fast) var(--ease)}
-.vchip:active{border-color:var(--brand)}
-@media(hover:hover){ .vchip:hover{background:var(--surface-2)} }
 /* code card */
 .code-card{background:var(--surface);border-radius:var(--r-card);padding:20px;text-align:center;margin-top:20px}
 .code-card .code{font-size:26px;font-weight:700;letter-spacing:.14em;margin:6px 0 2px}
@@ -260,23 +253,17 @@ button.card{transition:background var(--mo-fast) var(--ease)}
   </header>
 
   <div id="views">
-    <!-- ═══ H. 홈 ═══ -->
+    <!-- ═══ H. 홈 (state-driven: 히어로가 상태마다 바뀜) ═══ -->
     <section class="view" id="v-home">
-      <div class="card rv" id="progress-box"></div>
-      <div class="rv" id="test-slot" style="margin-top:12px"></div>
-      <div class="rv" id="notif-slot"></div>
-      <div class="rv" style="margin-top:28px">
-        <div class="section-eyebrow">실시간 페이백</div>
+      <div class="rv" id="home-hero"></div>
+      <div class="rv lgroup" id="home-rows"></div>
+      <div class="rv" style="margin-top:var(--sp-7)">
         <div class="h2">지금도 누군가 받고 있어요</div>
-        <div class="sub" style="margin-top:4px">쌓인 페이백을 한 푼도 빠짐없이 받아가세요</div>
-        <div class="tbl" style="margin-top:16px">
-          <div class="thead"><span>UID</span><span>거래소</span><span style="text-align:right">페이백</span><span style="text-align:right">상태</span></div>
-          <div id="live-rows"></div>
-        </div>
-        <button class="tg" onclick="toast('데모 화면에서는 채널이 열리지 않아요 — 실제 앱에서 연결돼요')">
-          <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3L2 10l6 3M22 3l-4 17-7-6M22 3L8 13"/></svg></span>
-          <span class="tx"><span style="font-size:14px;font-weight:600;display:block">방금 받은 내역이 올라와요</span><span class="meta">텔레그램 실시간 페이백 채널</span></span>
-          <span class="meta" style="color:var(--brand);font-weight:600;flex-shrink:0">채널 보기</span>
+        <div class="lgroup" id="live-rows" style="margin-top:6px"></div>
+        <button class="lrow" onclick="toast('데모 화면에서는 채널이 열리지 않아요 — 실제 앱에서 연결돼요')">
+          <span class="li" style="background:var(--surface-2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3L2 10l6 3M22 3l-4 17-7-6M22 3L8 13"/></svg></span>
+          <span class="lt"><span class="t">방금 받은 내역이 올라와요</span><span class="s">텔레그램 실시간 채널</span></span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
         </button>
       </div>
     </section>
@@ -285,13 +272,13 @@ button.card{transition:background var(--mo-fast) var(--ease)}
     <section class="view" id="v-w1">
       <div class="nav-row"><button class="icon-btn" onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="meta">예상 페이백 확인 1/2</span></div>
       <div class="h1">먼저, 가장 자주 쓰는<br>거래소를 골라 주세요</div>
-      <div class="exg" id="w-exg"></div>
+      <div id="w-exg" style="margin-top:var(--sp-2)"></div>
     </section>
     <section class="view" id="v-w2">
       <div class="nav-row"><button class="icon-btn" onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="meta">예상 페이백 확인 2/2</span></div>
       <div class="h1">한 달에 얼마나<br>거래하세요?</div>
       <div class="sub" style="margin-top:8px">대략이면 충분해요</div>
-      <div class="vchips" id="w-vol"></div>
+      <div id="w-vol" style="margin-top:var(--sp-2)"></div>
     </section>
     <section class="view" id="v-w3">
       <div id="w3-loading" class="loading-view" style="display:flex">
@@ -306,7 +293,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
       <div class="nav-row"><button class="icon-btn" onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
       <div class="h1" id="pick-title">어느 거래소를<br>연결할까요?</div>
       <div class="sub" style="margin-top:8px" id="pick-sub">추천 코드로 가입한 거래소를 골라 주세요</div>
-      <div class="exg" id="pick-exg"></div>
+      <div id="pick-exg" style="margin-top:var(--sp-2)"></div>
     </section>
 
     <!-- ═══ C. UID 입력 ═══ -->
@@ -422,7 +409,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
     <div class="grip" aria-hidden="true"></div>
     <div class="h2">조금만 더 모으면<br>출금할 수 있어요</div>
     <div class="card" style="background:var(--bg);margin-top:16px">
-      <div style="display:flex;justify-content:space-between;font-size:14px"><span class="sub">지금 잔고</span><b class="num">30.00 USDT</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:14px"><span class="sub">지금 잔고</span><b class="num" id="wd-bal">30.00 USDT</b></div>
       <div style="display:flex;justify-content:space-between;font-size:14px;margin-top:10px"><span class="sub">출금 기준</span><b class="num">10 USDT 이상</b></div>
     </div>
     <div class="sub" style="margin-top:14px">가입 보너스는 거래 페이백이 쌓이면 함께 출금돼요. 첫 거래부터 페이백이 자동으로 쌓여요.</div>
@@ -627,7 +614,7 @@ const MockAPI={
     const a=Math.floor(Math.random()*90+100000), b=Math.floor(Math.random()*90+10);
     const uid=String(a).slice(0,2)+'*****'+String(a).slice(-2);
     const amt=(Math.random()*70+8).toFixed(2);
-    const d=new Date();
+    const d=new Date(Date.now()-Math.floor(Math.random()*40)*60000); /* 최근 40분 내 분산 */
     return {uid,ex,amt,t:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
   }
 };
@@ -681,6 +668,7 @@ function render(){
   lastIdx=idx;
   /* step 기억(중단 복귀) */
   if(['pick','uid','d1','d2'].includes(r)){ S.step=r; save(); } /* 홈 복귀 시에도 step 유지 → 이어서 하기 */
+  $('support').style.display=(r==='home')?'flex':'none'; /* FAB은 홈에서만 — 리스트 가림 방지 */
   if(r==='home') renderHome();
   if(r==='w1') renderWizardEx();
   if(r==='w2') renderVols();
@@ -690,97 +678,75 @@ function render(){
   if(r==='d1') $('d1-go').textContent=exName()+' 가입하러 가기';
   $('views').scrollTo(0,0);
 }
-/* ═══════════════ H. 홈 ═══════════════ */
-function checklist(){
-  const items=[['계정 생성',true],['본인 확인',true],['UID 연결',S.linked],['첫 페이백',S.firstPayback]];
-  let nowSet=false;
-  return '<div class="check">'+items.map(([t,done],i)=>{
-    let cls=done?'done':''; if(!done&&!nowSet){cls='now';nowSet=true;}
-    if(done&&i===justCheck) cls+=' just';
-    return '<div class="c-row '+cls+'"><span class="c-ic">'+(done?'<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>':'')+'</span>'+t+'</div>';
-  }).join('')+'</div>';
-}
+/* ═══════════════ H. 홈 — state-driven, 화면당 주인공 1명 ═══════════════ */
+const CHEV='<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
 function renderHome(){
-  const p=progress();
-  const box=$('progress-box');
+  const hero=$('home-hero'), rows=$('home-rows');
   const resumable=['pick','uid','d1','d2'].includes(S.step)&&!S.linked;
-  let head='',cta='';
-  if(S.firstPayback){
-    head='<div class="h2">모든 설정이 끝났어요</div><div class="sub" style="margin-top:6px">이제 전부 자동이에요 — 거래할수록 쌓여요</div>';
-  } else if(S.linked){
-    head='<div class="h2">첫 페이백만 남았어요</div><div class="sub" style="margin-top:6px">거래하면 자동으로 쌓여요 — 따로 할 일은 없어요</div>';
-  } else if(resumable){
-    const msg=S.step==='uid'?exName()+' UID 입력만 남았어요':S.step==='pick'?'거래소 선택만 남았어요':'거래소 가입만 남았어요';
-    head='<div class="h2">이어서 하기</div><div class="sub" style="margin-top:6px">'+msg+'</div>';
-    cta='<button class="btn btn-p" style="margin-top:16px" onclick="resume()">이어서 하기</button>';
+  let H='',R='';
+  if(!S.linked){
+    if(resumable){
+      const msg=S.step==='uid'?exName()+' UID 입력만 남았어요':S.step==='pick'?'거래소 선택만 남았어요':'거래소 가입만 남았어요';
+      H='<div class="hero"><div class="eyebrow">잠깐 멈췄던 곳부터</div><div class="h1">이어서 하기</div>'+
+        '<div class="sub" style="margin-top:8px">'+msg+'</div>'+
+        '<div class="btn-row"><button class="btn btn-p" onclick="resume()">이어서 하기</button></div></div>';
+    } else {
+      H='<div class="hero"><div class="eyebrow">가입 완료 · 이제 연결만 남았어요</div><div class="h1">이제 1분이면 돼요</div>'+
+        '<div class="sub" style="margin-top:8px">계정만 연결해도 <span class="gold">30 USDT</span>를 바로 드려요</div>'+
+        '<div class="btn-row"><button class="btn btn-p" onclick="openSheet(\'ask\')">계정 연결하기</button>'+
+        '<div class="meta" style="text-align:center">조회만 해요 — 출금 권한은 요청하지 않아요</div></div></div>';
+    }
+    R=S.tested
+      ? '<button class="lrow" onclick="go(\'w1\')"><span class="lt"><span class="t">매달 <span class="num">'+S.predicted.toLocaleString()+' USDT</span> 받을 수 있어요</span><span class="s">내 거래량 기준 · 다시 계산할 수 있어요</span></span>'+CHEV+'</button>'
+      : '<button class="lrow" onclick="go(\'w1\')"><span class="lt"><span class="t">내 예상 페이백 확인하기</span><span class="s">지금 놓치는 금액을 알려드려요</span></span>'+CHEV+'</button>';
   } else {
-    head='<div class="h2">이제 1분이면 돼요</div><div class="sub" style="margin-top:6px">🎁 계정만 연결해도 <span class="gold">30 USDT</span>를 바로 드려요</div>';
-    cta='<button class="btn btn-p" style="margin-top:16px" onclick="openSheet(\'ask\')">계정 연결하기</button>';
+    const hasPB=S.firstPayback;
+    H='<div class="hero"><div class="eyebrow">내 페이백 잔고</div>'+
+      '<div class="amt-hero"><b class="num" id="bal-num">'+S.balance.toFixed(2)+'</b><span>USDT</span></div>'+
+      '<div class="sub" style="margin-top:8px">'+(hasPB?'페이백 +'+(S.balance-30).toFixed(2)+' · 보너스 +30 USDT':'가입 보너스 30 USDT가 들어왔어요')+'</div>'+
+      '<div class="btn-row" style="margin-top:var(--sp-4)">'+
+      (hasPB
+        ?'<button class="btn btn-p" onclick="openSheet(\'withdraw\')">출금하기</button>'
+        :'<button class="btn btn-p" onclick="toast(\'거래소는 실제 앱에서 열려요 — 거래하면 페이백이 자동으로 쌓여요\')">거래하고 첫 페이백 받기</button>'+
+         '<div class="meta" style="text-align:center">거래하면 자동으로 쌓여요 — 따로 할 일은 없어요</div>')+
+      '</div></div>';
+    R='';
+    if(hasPB) R+='<div class="lrow"><span class="li" style="background:var(--brand-soft);color:var(--brand);font-size:18px;font-weight:600">+</span><span class="lt"><span class="t">첫 페이백 도착</span><span class="s">방금</span></span><span class="tr"><span class="amt-row num">+12.47<i>USDT</i></span></span></div>';
+    if(S.exchange) R+='<div class="lrow"><span class="li" style="background:'+S.exchange.c+'">'+S.exchange.n[0]+'</span><span class="lt"><span class="t">'+S.exchange.n+'</span><span class="s num">UID '+maskUid(S.uid||'68543217')+'</span></span><span class="tr"><span class="meta" style="color:var(--brand)">연결됨</span></span></div>';
+    if(S.tested&&!hasPB) R+='<div class="lrow"><span class="lt"><span class="t">매달 <span class="num">'+S.predicted.toLocaleString()+' USDT</span> 예상</span><span class="s">내 거래량 기준이에요</span></span></div>';
+    if(!hasPB) R+='<button class="lrow" onclick="openSheet(\'withdraw\')"><span class="lt"><span class="t">출금하기</span><span class="s">모은 페이백을 확인해요</span></span>'+CHEV+'</button>';
+    R+='<button class="lrow" onclick="'+(S.notif==='on'?'notifOff()':'openSheet(\'notif\')')+'" aria-label="페이백 도착 알림 '+(S.notif==='on'?'끄기':'켜기')+'"><span class="lt"><span class="t">페이백 도착 알림</span><span class="s">'+(S.notif==='on'?'켜져 있어요':(S.notifDenied?'텔레그램 채널로도 받을 수 있어요':'도착하면 바로 알려드려요'))+'</span></span><span class="sw'+(S.notif==='on'?' on':'')+'" aria-hidden="true"></span></button>';
   }
-  box.innerHTML=
-    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><span class="meta">페이백 시작하기</span><b class="num" id="prog-pct" style="font-size:var(--fs-btn)">'+p+'%</b></div>'+
-    '<div class="pbar"><i id="prog-bar" style="width:'+(lastPct===null?p:lastPct)+'%"></i></div>'+
-    checklist()+head+cta+
-    (S.linked?balanceCard():'');
-  /* 프로그레스 스프링 — 오버슛 후 안착, %는 슬롯 롤링 */
-  if(!REDUCED&&lastPct!==null&&lastPct!==p){
-    const bar=$('prog-bar');
-    Spring(lastPct,SPR.bouncy,v=>bar.style.width=Math.max(0,Math.min(100,v))+'%').set(p);
-    slotRoll($('prog-pct'),p+'%');
-  }
-  lastPct=p; justCheck=-1;
-  /* 테스트 슬롯 */
-  const ts=$('test-slot');
-  if(S.tested){
-    ts.innerHTML='<div class="card"><div class="meta">회원님의 월 예상 페이백</div>'+
-      '<div style="display:flex;align-items:baseline;gap:6px;margin-top:6px"><b class="num" style="font-size:26px">'+S.predicted.toLocaleString()+'</b><span style="font-weight:600">USDT</span></div>'+
-      '<div class="sub" style="margin-top:6px">'+(S.linked?'연결 완료 — 거래하면 이 금액이 현실이 돼요':'지금은 <b style="color:var(--text)">0 USDT</b> 받는 중이에요 — 연결하면 바로 시작돼요')+'</div></div>';
-  } else {
-    ts.innerHTML='<button class="card" style="width:100%;text-align:left;display:flex;align-items:center;gap:12px" onclick="go(\'w1\')">'+
-      '<span style="flex:1"><span style="font-size:15px;font-weight:600;display:block">내 예상 페이백 확인하기</span><span class="meta">1분이면 돼요 · 지금 놓치는 금액도 알 수 있어요</span></span>'+
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>';
-  }
-  /* 알림 슬롯 (연동 후에만) */
-  const ns=$('notif-slot');
-  if(!S.linked){ ns.innerHTML=''; }
-  else if(S.notif==='on'){
-    ns.innerHTML='<div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:0 4px" class="meta"><span style="width:5px;height:5px;border-radius:50%;background:var(--brand)"></span>알림이 켜져 있어요 · 페이백이 도착하면 바로 알려드려요</div>';
-  } else {
-    ns.innerHTML='<div class="card" style="margin-top:12px;display:flex;align-items:center;gap:12px">'+
-      '<span style="flex:1"><span style="font-size:15px;font-weight:600;display:block">페이백이 도착하면 알려드릴게요</span><span class="meta" id="notif-sub">'+(S.notifDenied?'알림 대신 텔레그램 채널로도 받아볼 수 있어요':'놓치지 않게 도착 즉시 알려드려요')+'</span></span>'+
-      '<button class="btn btn-p btn-sm" onclick="openSheet(\'notif\')">알림 받기</button></div>';
-  }
-}
-function balanceCard(){
-  return '<div style="border-top:1px solid var(--line);margin-top:18px;padding-top:16px">'+
-    '<div class="meta">내 페이백 잔고</div>'+
-    '<div style="display:flex;align-items:baseline;gap:6px;margin-top:4px"><b class="num" id="bal-num" style="font-size:30px">'+S.balance.toFixed(2)+'</b><span style="font-weight:600">USDT</span></div>'+
-    '<div class="meta" style="margin-top:4px">🎁 가입 보너스 +30 USDT · '+(S.firstPayback?'페이백 +'+(S.balance-30).toFixed(2)+' USDT':'방금')+'</div>'+
-    (S.exchange?'<div class="luid" style="margin-top:14px"><span class="exi" style="background:'+S.exchange.c+'">'+S.exchange.n[0]+'</span><span style="flex:1"><span style="font-size:14px;font-weight:600;display:block">'+S.exchange.n+'</span><span class="u"><i></i>UID '+maskUid(S.uid||'68543217')+'</span></span><span class="meta" style="color:var(--brand)">연결됨</span></div>':'')+
-    '<button class="btn btn-s" style="margin-top:12px" onclick="openSheet(\'withdraw\')">출금하기</button></div>';
+  hero.innerHTML=H; rows.innerHTML=R;
 }
 function maskUid(u){ return u.length<=4?u:u.slice(0,2)+'*'.repeat(Math.min(u.length-4,7))+u.slice(-2); }
 function resume(){
   if((S.step==='uid'||S.step==='d1') && !S.exchange){ S.step='pick'; save(); } /* 엣지 가드: 거래소 없이 복귀 불가 */
   go(S.step);
 }
-/* ═══════════════ 거래소 그리드 ═══════════════ */
-function exGrid(elId,onPick){
-  $(elId).innerHTML=EXCHANGES.map((e,i)=>'<button class="exc" data-i="'+i+'"><span class="top"><span class="exi" style="background:'+e.c+'">'+e.n[0]+'</span><span class="nm">'+e.n+'</span></span><span class="rt"><span class="meta">최종 페이백률</span><span class="badge num">'+e.r+'%</span></span></button>').join('');
-  $(elId).querySelectorAll('.exc').forEach(b=>b.onclick=()=>onPick(EXCHANGES[+b.dataset.i]));
+/* ═══════════════ 거래소 리스트 (그리드 → Toss식 행) ═══════════════ */
+function exGrid(elId,onPick,list){
+  const L=list||EXCHANGES;
+  $(elId).innerHTML='<div class="lgroup">'+L.map((e,i)=>
+    '<button class="lrow" data-i="'+i+'"><span class="li" style="background:'+e.c+'">'+e.n[0]+'</span>'+
+    '<span class="lt"><span class="t">'+e.n+'</span></span>'+
+    '<span class="tr"><span class="badge num">'+e.r+'%</span></span></button>').join('')+'</div>';
+  $(elId).querySelectorAll('.lrow').forEach(b=>b.onclick=()=>onPick(L[+b.dataset.i]));
 }
 function renderPick(){
   $('pick-title').innerHTML=S.pickMode==='signup'?'어느 거래소로<br>시작할까요?':'어느 거래소를<br>연결할까요?';
   $('pick-sub').textContent=S.pickMode==='signup'?'페이백률이 높은 순서예요':'추천 코드로 가입한 거래소를 골라 주세요';
-  exGrid('pick-exg',(e)=>{ S.exchange=e; save(); go(S.pickMode==='signup'?'d1':'uid'); });
+  const list=S.pickMode==='signup'?[...EXCHANGES].sort((a,b)=>b.r-a.r):EXCHANGES; /* signup: 카피대로 페이백률 높은 순 */
+  exGrid('pick-exg',(e)=>{ S.exchange=e; save(); go(S.pickMode==='signup'?'d1':'uid'); },list);
 }
 /* ═══════════════ W. 위저드 ═══════════════ */
 let wEx=null;
 function renderWizardEx(){ exGrid('w-exg',(e)=>{ wEx=e; go('w2'); }); }
 function renderVols(){
   if(!wEx) { go('w1',true); return; }
-  $('w-vol').innerHTML=VOLS.map((v,i)=>'<button class="vchip" data-i="'+i+'"><span><span style="font-size:15px;font-weight:600;display:block">'+v.label+'</span><span class="meta">'+v.sub+'</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>').join('');
-  $('w-vol').querySelectorAll('.vchip').forEach(b=>b.onclick=()=>{ wVol=+b.dataset.i; go('w3'); });
+  $('w-vol').innerHTML='<div class="lgroup">'+VOLS.map((v,i)=>
+    '<button class="lrow" data-i="'+i+'"><span class="lt"><span class="t">'+v.label+'</span><span class="s">'+v.sub+'</span></span>'+CHEV+'</button>').join('')+'</div>';
+  $('w-vol').querySelectorAll('.lrow').forEach(b=>b.onclick=()=>{ wVol=+b.dataset.i; go('w3'); });
 }
 let wVol=1;
 async function runCalc(){
@@ -889,11 +855,13 @@ function notifAllow(yes){
   else { S.notifDenied=true; save(); toast('괜찮아요 — 텔레그램 채널로도 받아볼 수 있어요'); }
   renderHome();
 }
+function notifOff(){ S.notif='off'; save(); toast('알림을 껐어요'); renderHome(); }
 /* ═══════════════ sheets ═══════════════ */
 const sheetStack=[];
 let sheetReturnFocus=null;
 function openSheet(id){
   const el=$('sh-'+id); if(!el) return;
+  if(id==='withdraw') $('wd-bal').textContent=S.balance.toFixed(2)+' USDT';
   if(!sheetStack.length) sheetReturnFocus=document.activeElement;
   el.classList.add('on'); $('dim').classList.add('on');
   $('views').classList.add('g-pushed'); /* 토스식: 뒤 화면이 살짝 물러남 */
@@ -917,9 +885,10 @@ function closeAllSheets(){
 }
 /* ═══════════════ live payouts ═══════════════ */
 function payoutRow(p,isNew){
-  return '<div class="trow'+(isNew?' new':'')+'"><span class="num" style="color:var(--text-2)">'+p.uid+'</span>'+
-    '<span><span class="exi" style="width:22px;height:22px;font-size:10px;background:'+p.ex.c+'">'+p.ex.n[0]+'</span></span>'+
-    '<span class="amt num">'+p.amt+' <span style="font-size:10px;color:var(--text-3);font-weight:400">USDT</span></span><span class="st"><i></i>완료</span></div>';
+  return '<div class="lrow'+(isNew?' new':'')+'" style="min-height:52px;padding:8px 4px">'+
+    '<span class="li" style="width:28px;height:28px;font-size:11px;background:'+p.ex.c+'">'+p.ex.n[0]+'</span>'+
+    '<span class="lt"><span class="s num" style="font-size:14px;color:var(--text-2);margin-top:0">'+p.uid+'</span></span>'+
+    '<span class="tr"><span class="amt-row num">'+p.amt+'<i>USDT</i></span><span class="meta num" style="width:34px">'+p.t+'</span></span></div>';
 }
 function startLive(){
   const box=$('live-rows');
@@ -960,7 +929,9 @@ function demoPayback(){
   if(!S.linked){ S.linked=true; S.bonus=30; S.balance=30; S.exchange=S.exchange||EXCHANGES[3]; S.uid=S.uid||'68543217'; }
   save(); closeAllSheets(); goHome();
   const amt=12.47, newBal=Math.round((S.balance+amt)*100)/100;
+  let landed=false;
   const land=()=>{
+    if(landed) return; landed=true;
     S.firstPayback=true; S.balance=newBal; justCheck=3; save();
     if(currentRoute()==='home') render();
     const nb=$('bal-num');
@@ -980,6 +951,7 @@ function demoPayback(){
     const sx=Spring(x0,SPR.smooth,v=>chip.style.left=v+'px');
     sy.done=()=>{ chip.remove(); land(); };
     setTimeout(()=>{ sy.set(y1); sx.set(x1); },380);
+    setTimeout(()=>{ if(!landed){ chip.remove(); land(); } },2600); /* rAF 정지(백그라운드) 시에도 상태 착지 보증 */
   },80);
 }
 /* ═══════════════ cosmos — Gemini풍 인터랙티브 파티클 우주 (canvas 2D, 라이브러리 없음) ═══════════════ */
