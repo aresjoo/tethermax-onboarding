@@ -154,6 +154,26 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .hpay.pressed{transform:translateY(3px) scale(.96);box-shadow:0 1px 0 #0031C6,0 5px 10px rgba(36,83,240,.18)}
 .hcoin{position:absolute;z-index:3;width:22px;height:22px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 30%,#F8D18B,#E0A94E 60%,#B9832F);color:#5B4213;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,.35),inset 0 -2px 3px rgba(0,0,0,.22);pointer-events:none}
 .hcopy{padding:10px 20px 0}
+/* linked-미거래 히어로 카드 구성요소 */
+.hl-status{display:flex;align-items:center;gap:10px;padding:16px 20px 4px}
+.hl-status .lt{flex:1;min-width:0}
+.hl-status .lt .t{font-size:14px;font-weight:600;display:block;line-height:1.35}
+.hl-status .lt .s{font-size:11px;color:var(--text-3);display:block;margin-top:1px}
+.hscene-sm{height:168px}
+.wprog{height:5px;border-radius:100px;background:var(--surface-2);overflow:hidden;margin-top:12px}
+.wprog i{display:block;height:100%;border-radius:100px;background:var(--brand)}
+.missed{margin-top:10px;font-size:var(--fs-label);color:var(--text-2)}
+.hmission{margin-top:var(--sp-4);padding-top:14px;border-top:1px solid var(--line)}
+.hmission .c-row{min-height:30px;font-size:var(--fs-label)}
+.hcalc-t{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:12px;padding:12px 0 2px;border-top:1px solid var(--line);font-size:var(--fs-label);font-weight:600;color:var(--text-2);transition:color var(--mo-fast) var(--ease)}
+@media(hover:hover){ .hcalc-t:hover{color:var(--text)} }
+.hcalc{padding:10px 0 2px}
+.calc-chips{display:flex;gap:8px}
+.cchip{flex:1;height:34px;border-radius:var(--r-chip);background:var(--surface-2);font-size:var(--fs-label);font-weight:500;color:var(--text-2);transition:background var(--mo-fast) var(--ease),color var(--mo-fast) var(--ease)}
+.cchip.on{background:var(--brand-deep);color:#fff}
+@media(hover:hover){ .cchip:not(.on):hover{background:#2B3040} }
+.hghost{position:absolute;z-index:4;color:var(--gold);font-size:12px;font-weight:700;transform:translate(-50%,-50%);animation:ghost 1.3s var(--ease) forwards;pointer-events:none;white-space:nowrap}
+@keyframes ghost{0%{opacity:0;transform:translate(-50%,-20%)}25%{opacity:1}100%{opacity:0;transform:translate(-50%,-150%)}}
 @media(prefers-reduced-motion:reduce){ .hfloat1,.hfloat2{animation:none} .hcash{opacity:1;transform:none} }
 /* switch */
 .sw{position:relative;width:40px;height:24px;border-radius:100px;background:var(--surface-2);transition:background var(--mo-normal) var(--ease);flex-shrink:0}
@@ -436,7 +456,7 @@ button.card{transition:background var(--mo-fast) var(--ease)}
     <div class="h2">조금만 더 모으면<br>출금할 수 있어요</div>
     <div class="card" style="background:var(--bg);margin-top:16px">
       <div style="display:flex;justify-content:space-between;font-size:14px"><span class="sub">지금 잔고</span><b class="num" id="wd-bal">30.00 USDT</b></div>
-      <div style="display:flex;justify-content:space-between;font-size:14px;margin-top:10px"><span class="sub">출금 기준</span><b class="num">10 USDT 이상</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-top:10px"><span class="sub">출금 기준</span><b class="num">40 USDT 이상</b></div>
     </div>
     <div class="sub" style="margin-top:14px">가입 보너스는 거래 페이백이 쌓이면 함께 출금돼요. 첫 거래부터 페이백이 자동으로 쌓여요.</div>
     <div class="btn-row"><button class="btn btn-p" onclick="closeTopSheet();toast('거래소는 실제 앱에서 열려요. 거래하면 페이백이 자동으로 쌓여요')">거래하고 페이백 쌓기</button></div>
@@ -753,24 +773,65 @@ function renderHome(){
       : '<button class="lrow" onclick="go(\'w1\')"><span class="lt"><span class="t">내 예상 페이백 확인하기</span><span class="s">지금 놓치는 금액을 알려드려요</span></span>'+CHEV+'</button>';
   } else {
     const hasPB=S.firstPayback;
-    H='<div class="hero"><div class="eyebrow">내 페이백 잔고</div>'+
-      '<div class="amt-hero"><b class="num" id="bal-num">'+S.balance.toFixed(2)+'</b><span>USDT</span></div>'+
-      '<div class="sub" style="margin-top:8px">'+(hasPB?'페이백 +'+(S.balance-30).toFixed(2)+' · 보너스 +30 USDT':'가입 보너스 30 USDT가 들어왔어요')+'</div>'+
-      '<div class="btn-row" style="margin-top:var(--sp-4)">'+
-      (hasPB
-        ?'<button class="btn btn-p" onclick="openSheet(\'withdraw\')">출금하기</button>'
-        :'<button class="btn btn-p" onclick="toast(\'거래소는 실제 앱에서 열려요. 거래하면 페이백이 자동으로 쌓여요\')">거래하고 첫 페이백 받기</button>'+
-         '<div class="meta" style="text-align:center">거래하면 자동으로 쌓여요. 따로 할 일은 없어요</div>')+
-      '</div></div>';
-    R='';
-    if(hasPB) R+='<div class="lrow"><span class="li" style="background:var(--brand-soft);color:var(--brand);font-size:18px;font-weight:600">+</span><span class="lt"><span class="t">첫 페이백 도착</span><span class="s">방금</span></span><span class="tr"><span class="amt-row num">+12.47<i>USDT</i></span></span></div>';
-    if(S.exchange) R+='<div class="lrow">'+exIcon(S.exchange)+'<span class="lt"><span class="t">'+S.exchange.n+'</span><span class="s num">UID '+maskUid(S.uid||'68543217')+'</span></span><span class="tr"><span class="meta" style="color:var(--brand)">연결됨</span></span></div>';
-    if(S.tested&&!hasPB) R+='<div class="lrow"><span class="lt"><span class="t">매달 <span class="num">'+S.predicted.toLocaleString()+' USDT</span> 예상</span><span class="s">내 거래량 기준이에요</span></span></div>';
-    if(!hasPB) R+='<button class="lrow" onclick="openSheet(\'withdraw\')"><span class="lt"><span class="t">출금하기</span><span class="s">모은 페이백을 확인해요</span></span>'+CHEV+'</button>';
-    R+='<button class="lrow" onclick="'+(S.notif==='on'?'notifOff()':'openSheet(\'notif\')')+'" aria-label="페이백 도착 알림 '+(S.notif==='on'?'끄기':'켜기')+'"><span class="lt"><span class="t">페이백 도착 알림</span><span class="s">'+(S.notif==='on'?'켜져 있어요':(S.notifDenied?'텔레그램 채널로도 받을 수 있어요':'도착하면 바로 알려드려요'))+'</span></span><span class="sw'+(S.notif==='on'?' on':'')+'" aria-hidden="true"></span></button>';
+    const notifRow='<button class="lrow" onclick="'+(S.notif==='on'?'notifOff()':'openSheet(\'notif\')')+'" aria-label="페이백 도착 알림 '+(S.notif==='on'?'끄기':'켜기')+'"><span class="lt"><span class="t">페이백 도착 알림</span><span class="s">'+(S.notif==='on'?'켜져 있어요':(S.notifDenied?'텔레그램 채널로도 받을 수 있어요':'도착하면 바로 알려드려요'))+'</span></span><span class="sw'+(S.notif==='on'?' on':'')+'" aria-hidden="true"></span></button>';
+    if(!hasPB){
+      /* ═ 연동 완료 · 미거래 — 첫 거래 전환 히어로 카드 ═ */
+      if(!S.linkedAt){ S.linkedAt=Date.now(); save(); }
+      const ex=S.exchange||EXCHANGES[3], missed=PB.missed(), isMissed=missed>=0.5;
+      const missVal=isMissed?missed:PB.today();
+      H='<div class="hero-card" id="hcard">'+
+        '<div class="hl-status">'+exIcon(ex,32)+
+          '<span class="lt"><span class="t">'+ex.n+' <span style="color:var(--brand)">연결됨</span></span>'+
+          '<span class="s num">UID '+maskUid(S.uid||'68543217')+' · 조회만 연결돼 있어요</span></span></div>'+
+        '<div class="hscene hscene-sm" aria-hidden="true"><div class="hstage" id="hstage">'+
+          '<div class="hpanel hfloat1">'+HSVG+
+            '<div class="htrade" id="htrade">체결 완료</div>'+
+            '<div class="hcash" id="hcash">+'+PB.today().toFixed(2)+' USDT</div>'+
+          '</div>'+
+          '<button class="hpay" id="hpay" tabindex="-1" onclick="hsUserPay()">페이백 받기</button>'+
+        '</div></div>'+
+        '<div class="hcopy">'+
+          '<div style="font-size:var(--fs-label);color:var(--text-3)">내 페이백 잔고</div>'+
+          '<div class="amt-hero"><b class="num" id="bal-num">'+S.balance.toFixed(2)+'</b><span>USDT</span></div>'+
+          '<div class="wprog"><i id="wprog-i" style="width:0%"></i></div>'+
+          '<div class="meta" style="margin-top:6px">'+(WD_MIN-S.balance>0?('<b style="color:var(--text-2)" class="num">'+(WD_MIN-S.balance).toFixed(0)+' USDT</b>만 더 모으면 출금할 수 있어요'):'지금 출금할 수 있어요')+'</div>'+
+          '<div class="missed">'+(isMissed?'연동 후 놓친 예상 페이백':'오늘 거래하면 예상 페이백')+' <b class="gold num"><span id="hmiss-n" data-v="'+missVal.toFixed(2)+'">0.00</span> USDT</b>'+(isMissed?'':'을 받을 수 있어요')+'</div>'+
+          '<div class="btn-row" style="margin-top:var(--sp-4)"><button class="btn btn-p" onclick="openExchange()">'+ex.n+'에서 거래하기</button>'+
+          '<div class="meta" style="text-align:center">한 번만 거래해도 첫 페이백이 시작돼요</div></div>'+
+          '<div class="hmission"><div style="font-size:13px;font-weight:600;color:var(--text-2)">첫 거래 미션</div>'+
+            '<div class="check" style="margin-top:2px">'+
+            '<div class="c-row done"><span class="c-ic"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span>UID 연결 완료</div>'+
+            '<div class="c-row now"><span class="c-ic"></span>아무 코인이나 1번 거래하기</div>'+
+            '<div class="c-row"><span class="c-ic"></span>첫 페이백 받기 · 도착하면 바로 알려드려요</div>'+
+            '</div></div>'+
+          '<button class="hcalc-t" id="hcalc-btn" aria-expanded="false" onclick="calcToggle()"><span>거래하면 얼마나 쌓이는지 보기</span>'+CHEV+'</button>'+
+          '<div class="hcalc" id="hcalc" hidden>'+
+            '<div class="calc-chips">'+[10,50,100,500].map(v=>'<button class="cchip'+(v===100?' on':'')+'" data-v="'+v+'" onclick="calcSet('+v+')">'+v+'만</button>').join('')+'</div>'+
+            '<div class="sub" style="margin-top:10px">이 정도 거래하면 예상 페이백 <b class="gold num" id="calc-out">≈ '+PB.estimate(1000000).toFixed(2)+' USDT</b></div>'+
+          '</div>'+
+        '</div></div>';
+      R='<button class="lrow" onclick="openSheet(\'withdraw\')"><span class="lt"><span class="t">출금하기</span><span class="s">모은 페이백을 확인해요</span></span>'+CHEV+'</button>'+notifRow;
+    } else {
+      H='<div class="hero"><div class="eyebrow">내 페이백 잔고</div>'+
+        '<div class="amt-hero"><b class="num" id="bal-num">'+S.balance.toFixed(2)+'</b><span>USDT</span></div>'+
+        '<div class="sub" style="margin-top:8px">페이백 +'+(S.balance-30).toFixed(2)+' · 보너스 +30 USDT</div>'+
+        '<div class="btn-row" style="margin-top:var(--sp-4)"><button class="btn btn-p" onclick="openSheet(\'withdraw\')">출금하기</button></div></div>';
+      R='<div class="lrow"><span class="li" style="background:var(--brand-soft);color:var(--brand);font-size:18px;font-weight:600">+</span><span class="lt"><span class="t">첫 페이백 도착</span><span class="s">방금</span></span><span class="tr"><span class="amt-row num">+12.47<i>USDT</i></span></span></div>';
+      if(S.exchange) R+='<div class="lrow">'+exIcon(S.exchange)+'<span class="lt"><span class="t">'+S.exchange.n+'</span><span class="s num">UID '+maskUid(S.uid||'68543217')+'</span></span><span class="tr"><span class="meta" style="color:var(--brand)">연결됨</span></span></div>';
+      R+=notifRow;
+    }
   }
   hero.innerHTML=H; rows.innerHTML=R;
-  if(!S.linked&&!resumable) heroSceneInit(); else hsStop();
+  if($('hcard')) heroSceneInit(); else hsStop();
+  /* linked-미거래 진입 연출: 놓친 페이백 카운트업 + 출금 프로그레스 스프링 */
+  const mn=$('hmiss-n');
+  if(mn){
+    const v=parseFloat(mn.dataset.v)||0;
+    if(REDUCED) mn.textContent=v.toFixed(2); else hsTween(mn,0,v,650);
+    const bar=$('wprog-i'), pct=Math.min(100,S.balance/WD_MIN*100);
+    if(bar){ if(REDUCED) bar.style.width=pct+'%';
+      else Spring(0,SPR.smooth,x=>bar.style.width=Math.max(0,Math.min(100,x))+'%').set(pct); }
+  }
 }
 /* ═══════════════ hero scene engine.7~9s 스토리 루프 (차트→체결→적립→페이백→잔고) ═══════════════ */
 const HSVG='<svg viewBox="0 0 178 98" fill="none" aria-hidden="true">'+
@@ -785,6 +846,37 @@ const HSVG='<svg viewBox="0 0 178 98" fill="none" aria-hidden="true">'+
   '<rect id="hc-last" x="154" y="48" width="9" height="16" rx="2" fill="#3D63D8"/>'+
   '</svg>';
 let hsT=[], hsRun=false, hsBal=248.10, hsIO=null;
+/* ═ 페이백 계산 로직 (mock — 실API 교체 지점) ═ */
+const WD_MIN=40; /* 출금 기준 USDT */
+const PB={
+  rate(){ return (S.exchange?S.exchange.r:77)/100; },
+  monthly(){ return S.predicted||Math.round(VOLS[1].v*((S.exchange?S.exchange.r:77)/77)); }, /* 미테스트 시 기본 거래량 티어 기준 */
+  daily(){ return this.monthly()/30; },
+  missed(){ return Math.max(0,(Date.now()-(S.linkedAt||Date.now()))/86400000)*this.daily(); }, /* 연동 후 경과일 × 일 예측 */
+  today(){ return Math.round(this.daily()*100)/100; },
+  estimate(krw){ return Math.round(krw*0.00055*this.rate()/1350*100)/100; } /* taker 0.055% × 페이백률, 1 USDT=1,350원 */
+};
+const EXURL={binance:'https://www.binance.com',bybit:'https://www.bybit.com',bitget:'https://www.bitget.com',okx:'https://www.okx.com',gate:'https://www.gate.io',wooxpro:'https://woox.io'};
+function openExchange(){
+  const u=EXURL[S.exchange&&S.exchange.id]||'https://tethermax.io/ko/affiliated';
+  window.open(u,'_blank');
+  toast('거래 후 돌아오면 첫 페이백이 자동으로 잡혀요');
+}
+function calcToggle(){
+  const c=$('hcalc'), b=$('hcalc-btn'); if(!c) return;
+  const open=c.hidden; c.hidden=!open; b.setAttribute('aria-expanded',String(open));
+}
+function calcSet(v){
+  document.querySelectorAll('.cchip').forEach(x=>x.classList.toggle('on',+x.dataset.v===v));
+  const el=$('calc-out'); if(!el) return;
+  const from=parseFloat((el.textContent.match(/[\d.]+/)||['0'])[0])||0, to=PB.estimate(v*10000);
+  if(REDUCED){ el.textContent='≈ '+to.toFixed(2)+' USDT'; return; }
+  const steps=12; let i=0;
+  const iv=setInterval(()=>{ i++; const p=i/steps, e=1-Math.pow(1-p,3);
+    el.textContent='≈ '+(from+(to-from)*e).toFixed(2)+' USDT';
+    if(i>=steps) clearInterval(iv); },30);
+  hsT.push(iv);
+}
 function hsStop(){ hsRun=false; hsT.forEach(clearTimeout); hsT=[]; }
 function hsAfter(ms,f){ hsT.push(setTimeout(f,ms)); }
 function heroSceneInit(){
@@ -818,7 +910,9 @@ function hsLoop(){
   hsAfter(9000,()=>{ hsRun=false; hsLoop(); });
 }
 function hsReceive(){
-  const pay=$('hpay'), bal=$('hbal-n'), scene=document.querySelector('#hcard .hscene');
+  const pay=$('hpay'), scene=document.querySelector('#hcard .hscene');
+  const demoBal=$('hbal-n'), realBal=demoBal?null:$('bal-num');
+  const bal=demoBal||realBal;
   if(!pay||!bal||!scene) return;
   pay.classList.add('pressed');
   hsAfter(220,()=>pay.classList.remove('pressed','hot'));
@@ -831,10 +925,18 @@ function hsReceive(){
   const rot=Spring(0,SPR.smooth,v=>c.style.transform='translate(-50%,-50%) rotate('+v+'deg)');
   hsAfter(30,()=>sy.set(y0-14));                       /* 살짝 떠오름 */
   hsAfter(220,()=>{ sy.set(y1); sx.set(x1); rot.set(16); });
-  hsAfter(850,()=>{                                    /* 착지: 잔고 보간(500~700ms) + 미세 틱 */
-    const from=hsBal, to=Math.round((hsBal+3.24)*100)/100; hsBal=to;
-    hsTween(bal,from,to,600);
-    const hb=$('hbal'); if(hb){ hb.classList.add('tick'); hsAfter(320,()=>hb.classList.remove('tick')); }
+  hsAfter(850,()=>{                                    /* 착지 */
+    if(demoBal){ /* 신규 히어로: 데모 잔고 보간 */
+      const from=hsBal, to=Math.round((hsBal+3.24)*100)/100; hsBal=to;
+      hsTween(demoBal,from,to,600);
+      const hb=$('hbal'); if(hb){ hb.classList.add('tick'); hsAfter(320,()=>hb.classList.remove('tick')); }
+    } else { /* 연동 히어로: 실잔고는 불변 — "예상" 고스트 + 젤리 (정직성) */
+      const g=document.createElement('div'); g.className='hghost num';
+      g.textContent='+'+PB.today().toFixed(2)+' USDT 예상';
+      g.style.left=x1+'px'; g.style.top=(y1-6)+'px';
+      scene.appendChild(g); hsAfter(1350,()=>g.remove());
+      jelly(bal.parentElement,0.05);
+    }
   });
   hsAfter(1050,()=>c.remove());
 }
@@ -925,7 +1027,7 @@ async function submitUid(){
   const res=await MockAPI.verifyUid(S.exchange?S.exchange.id:'',uid);
   $('uid-loading').style.display='none';
   if(res.ok){
-    S.uid=uid; S.linked=true; S.bonus=30; S.balance=30; S.step='home'; save();
+    S.uid=uid; S.linked=true; S.bonus=30; S.balance=30; S.linkedAt=Date.now(); S.step='home'; save();
     openCele();
   } else if(res.code==='NO_REFERRAL'){
     $('uid-noref').style.display='flex';
@@ -1049,14 +1151,14 @@ function demoReset(){ localStorage.removeItem('tm_state'); location.hash=''; loc
 function demoPreset(k){
   if(k==='tested'){ S.tested=true; S.predicted=500; }
   if(k==='resume'){ S=Object.assign({},DEF,{tested:true,predicted:500,exchange:EXCHANGES[1],pickMode:'link',step:'uid'}); }
-  if(k==='linked'){ S=Object.assign({},DEF,{linked:true,bonus:30,balance:30,exchange:EXCHANGES[1],uid:'68543217',tested:true,predicted:500,step:'home'}); }
+  if(k==='linked'){ S=Object.assign({},DEF,{linked:true,bonus:30,balance:30,exchange:EXCHANGES[1],uid:'68543217',tested:true,predicted:500,step:'home',linkedAt:Date.now()-4*3600000}); }
   if(k==='notif'){ S.notif='on'; }
   if(k==='payback'){ demoPayback(); return; }
   save(); closeAllSheets(); goHome();
 }
 /* 첫 페이백. 금액 칩이 위에서 잔고로 날아와 젤리 착지 후 잔고가 굴러 올라감 */
 function demoPayback(){
-  if(!S.linked){ S.linked=true; S.bonus=30; S.balance=30; S.exchange=S.exchange||EXCHANGES[3]; S.uid=S.uid||'68543217'; }
+  if(!S.linked){ S.linked=true; S.bonus=30; S.balance=30; S.exchange=S.exchange||EXCHANGES[3]; S.uid=S.uid||'68543217'; S.linkedAt=S.linkedAt||Date.now(); }
   save(); closeAllSheets(); goHome();
   const amt=12.47, newBal=Math.round((S.balance+amt)*100)/100;
   let landed=false;
