@@ -129,6 +129,32 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .lrow .tr{flex-shrink:0;display:flex;align-items:center;gap:8px;text-align:right}
 .lrow.new{animation:rowin .4s var(--ease)}
 .chev{color:var(--text-3);flex-shrink:0}
+/* ═ hero 3D scene — 미니 제품 필름: 차트→체결→적립→페이백→잔고 ═ */
+.hero-card{background:linear-gradient(180deg,#1E222C,#181C26);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:0 0 22px;margin-top:var(--sp-5);overflow:hidden}
+.hscene{position:relative;height:200px;perspective:900px;margin:8px 8px 0}
+.hstage{position:absolute;inset:0;transform-style:preserve-3d}
+.hpanel{position:absolute;left:14px;top:32px;width:198px;height:122px;border-radius:14px;background:linear-gradient(160deg,#262B37,#1A1E29);border:1px solid rgba(255,255,255,.07);box-shadow:0 18px 28px rgba(0,0,0,.32);transform:rotateX(7deg) rotateY(-9deg);padding:10px}
+.hfloat1{animation:hf1 6.5s ease-in-out infinite}
+.hfloat2{animation:hf2 7.5s ease-in-out .8s infinite}
+@keyframes hf1{0%,100%{margin-top:0}50%{margin-top:-3px}}
+@keyframes hf2{0%,100%{margin-top:0}50%{margin-top:2px}}
+.hpanel svg{display:block;width:100%;height:100%}
+#hc-last{transition:y 1s var(--ease),height 1s var(--ease),fill 1s var(--ease)}
+#hc-last.n1{y:44px;height:20px}
+#hc-last.up{y:32px;height:32px;fill:#4C8A76}
+.htrade{position:absolute;left:50%;top:-13px;transform:translateX(-50%) translateY(4px);background:#232A38;border:1px solid rgba(255,255,255,.1);color:var(--text-2);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;opacity:0;transition:opacity .25s var(--ease),transform .25s var(--ease);display:flex;gap:5px;align-items:center;white-space:nowrap}
+.htrade.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.htrade::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--green)}
+.hcash{position:absolute;right:-8px;bottom:-11px;background:linear-gradient(160deg,#3A3121,#2E2718);border:1px solid rgba(245,195,106,.35);color:var(--gold);font-size:12px;font-weight:700;padding:5px 10px;border-radius:100px;opacity:0;transform:translateY(4px);transition:opacity .3s var(--ease),transform .3s var(--ease);white-space:nowrap}
+.hcash.on{opacity:1;transform:none}
+.hbal{position:absolute;right:14px;top:14px;text-align:right;display:flex;flex-direction:column;gap:1px;transition:transform .25s var(--ease)}
+.hbal.tick{transform:scale(1.06)}
+.hpay{position:absolute;right:14px;bottom:16px;height:34px;padding:0 14px;border-radius:10px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(180deg,#2E5BF6,#1D46D6);box-shadow:0 3px 0 #0031C6,0 10px 18px rgba(36,83,240,.22);transition:transform .15s var(--ease),box-shadow .15s var(--ease),filter .35s var(--ease)}
+.hpay.hot{filter:brightness(1.14)}
+.hpay.pressed{transform:translateY(3px) scale(.96);box-shadow:0 1px 0 #0031C6,0 5px 10px rgba(36,83,240,.18)}
+.hcoin{position:absolute;z-index:3;width:22px;height:22px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 30%,#F8D18B,#E0A94E 60%,#B9832F);color:#5B4213;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,.35),inset 0 -2px 3px rgba(0,0,0,.22);pointer-events:none}
+.hcopy{padding:10px 20px 0}
+@media(prefers-reduced-motion:reduce){ .hfloat1,.hfloat2{animation:none} .hcash{opacity:1;transform:none} }
 /* switch */
 .sw{position:relative;width:40px;height:24px;border-radius:100px;background:var(--surface-2);transition:background var(--mo-normal) var(--ease);flex-shrink:0}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform var(--mo-normal) var(--ease)}
@@ -692,10 +718,21 @@ function renderHome(){
         '<div class="sub" style="margin-top:8px">'+msg+'</div>'+
         '<div class="btn-row"><button class="btn btn-p" onclick="resume()">이어서 하기</button></div></div>';
     } else {
-      H='<div class="hero"><div class="eyebrow">가입 완료 · 이제 연결만 남았어요</div><div class="h1">이제 1분이면 돼요</div>'+
-        '<div class="sub" style="margin-top:8px">계정만 연결해도 <span class="gold">30 USDT</span>를 바로 드려요</div>'+
-        '<div class="btn-row"><button class="btn btn-p" onclick="openSheet(\'ask\')">계정 연결하기</button>'+
-        '<div class="meta" style="text-align:center">조회만 해요 — 출금 권한은 요청하지 않아요</div></div></div>';
+      H='<div class="hero-card" id="hcard">'+
+        '<div class="hscene" aria-hidden="true"><div class="hstage" id="hstage">'+
+          '<div class="hpanel hfloat1">'+HSVG+
+            '<div class="htrade" id="htrade">체결 완료</div>'+
+            '<div class="hcash" id="hcash">+3.24 USDT</div>'+
+          '</div>'+
+          '<div class="hbal hfloat2" id="hbal"><span class="meta" style="font-size:10px">내 페이백</span><span><b class="num" id="hbal-n" style="font-size:16px">'+hsBal.toFixed(2)+'</b> <span class="meta" style="font-size:10px">USDT</span></span></div>'+
+          '<button class="hpay" id="hpay" tabindex="-1" onclick="hsUserPay()">페이백 받기</button>'+
+        '</div></div>'+
+        '<div class="hcopy">'+
+          '<div style="font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1.3">거래할수록, 돌려받으세요</div>'+
+          '<div class="sub" style="margin-top:8px">평소처럼 거래하면 수수료가 페이백으로 쌓여요.<br>지금 연결하면 <span class="gold">30 USDT</span>를 바로 드려요.</div>'+
+          '<div class="btn-row"><button class="btn btn-p" onclick="openSheet(\'ask\')">페이백 시작하기</button>'+
+          '<div class="meta" style="text-align:center">조회만 해요 — 출금 권한은 요청하지 않아요</div></div>'+
+        '</div></div>';
     }
     R=S.tested
       ? '<button class="lrow" onclick="go(\'w1\')"><span class="lt"><span class="t">매달 <span class="num">'+S.predicted.toLocaleString()+' USDT</span> 받을 수 있어요</span><span class="s">내 거래량 기준 · 다시 계산할 수 있어요</span></span>'+CHEV+'</button>'
@@ -719,7 +756,83 @@ function renderHome(){
     R+='<button class="lrow" onclick="'+(S.notif==='on'?'notifOff()':'openSheet(\'notif\')')+'" aria-label="페이백 도착 알림 '+(S.notif==='on'?'끄기':'켜기')+'"><span class="lt"><span class="t">페이백 도착 알림</span><span class="s">'+(S.notif==='on'?'켜져 있어요':(S.notifDenied?'텔레그램 채널로도 받을 수 있어요':'도착하면 바로 알려드려요'))+'</span></span><span class="sw'+(S.notif==='on'?' on':'')+'" aria-hidden="true"></span></button>';
   }
   hero.innerHTML=H; rows.innerHTML=R;
+  if(!S.linked&&!resumable) heroSceneInit(); else hsStop();
 }
+/* ═══════════════ hero scene engine — 7~9s 스토리 루프 (차트→체결→적립→페이백→잔고) ═══════════════ */
+const HSVG='<svg viewBox="0 0 178 98" fill="none" aria-hidden="true">'+
+  '<path d="M4 26h170M4 50h170M4 74h170" stroke="rgba(255,255,255,.05)"/>'+
+  '<path d="M14 34v40M38 42v34M62 28v42M86 26v36M110 34v40M134 24v40M158 40v34" stroke="rgba(255,255,255,.14)" stroke-width="1.4"/>'+
+  '<rect x="10" y="46" width="9" height="22" rx="2" fill="#4C8A76"/>'+
+  '<rect x="34" y="52" width="9" height="18" rx="2" fill="#7A5560"/>'+
+  '<rect x="58" y="40" width="9" height="26" rx="2" fill="#4C8A76"/>'+
+  '<rect x="82" y="36" width="9" height="20" rx="2" fill="#4C8A76"/>'+
+  '<rect x="106" y="44" width="9" height="22" rx="2" fill="#7A5560"/>'+
+  '<rect x="130" y="34" width="9" height="24" rx="2" fill="#4C8A76"/>'+
+  '<rect id="hc-last" x="154" y="48" width="9" height="16" rx="2" fill="#3D63D8"/>'+
+  '</svg>';
+let hsT=[], hsRun=false, hsBal=248.10, hsIO=null;
+function hsStop(){ hsRun=false; hsT.forEach(clearTimeout); hsT=[]; }
+function hsAfter(ms,f){ hsT.push(setTimeout(f,ms)); }
+function heroSceneInit(){
+  hsStop();
+  const card=$('hcard'); if(!card) return;
+  if(REDUCED){ const c=$('hcash'); if(c) c.classList.add('on'); return; } /* 정지 프레임: 핵심 상태만 노출 */
+  /* 데스크톱 패럴랙스 — 최대 2~3도, 스프링 복귀 */
+  if(matchMedia('(hover:hover)').matches){
+    const stage=$('hstage'); let rx=0,ry=0;
+    const apply=()=>stage.style.transform='rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
+    const sx=Spring(0,SPR.smooth,v=>{ry=v;apply();}), sy=Spring(0,SPR.smooth,v=>{rx=v;apply();});
+    card.addEventListener('pointermove',e=>{ const r=card.getBoundingClientRect();
+      sx.set(((e.clientX-r.left)/r.width-.5)*5); sy.set((.5-(e.clientY-r.top)/r.height)*4); });
+    card.addEventListener('pointerleave',()=>{ sx.set(0); sy.set(0); });
+  }
+  /* 화면 밖·탭 숨김이면 정지 */
+  if(hsIO) hsIO.disconnect();
+  hsIO=new IntersectionObserver(es=>es.forEach(x=>{ if(x.isIntersecting){ if(!hsRun) hsLoop(); } else hsStop(); }),{threshold:.25});
+  hsIO.observe(card);
+}
+function hsLoop(){
+  if(hsRun||REDUCED) return; hsRun=true;
+  const last=document.getElementById('hc-last');
+  hsAfter(1200,()=>{ if(last) last.classList.add('n1'); });          /* 조용한 캔들 미동 */
+  hsAfter(2000,()=>{ const t=$('htrade'); if(t) t.classList.add('on'); });
+  hsAfter(2600,()=>{ if(last){ last.classList.remove('n1'); last.classList.add('up'); } });
+  hsAfter(2900,()=>{ const t=$('htrade'); if(t) t.classList.remove('on'); const c=$('hcash'); if(c) c.classList.add('on'); });
+  hsAfter(3600,()=>{ const p=$('hpay'); if(p) p.classList.add('hot'); });
+  hsAfter(4600,()=>hsReceive());
+  hsAfter(6600,()=>{ const c=$('hcash'); if(c) c.classList.remove('on'); if(last) last.classList.remove('up'); });
+  hsAfter(9000,()=>{ hsRun=false; hsLoop(); });
+}
+function hsReceive(){
+  const pay=$('hpay'), bal=$('hbal-n'), scene=document.querySelector('#hcard .hscene');
+  if(!pay||!bal||!scene) return;
+  pay.classList.add('pressed');
+  hsAfter(220,()=>pay.classList.remove('pressed','hot'));
+  const sr=scene.getBoundingClientRect(), pr=pay.getBoundingClientRect(), br=bal.getBoundingClientRect();
+  const c=document.createElement('div'); c.className='hcoin'; c.textContent='₮';
+  const x0=pr.left-sr.left+pr.width/2, y0=pr.top-sr.top+6, x1=br.left-sr.left+br.width/2, y1=br.top-sr.top+br.height/2;
+  c.style.left=x0+'px'; c.style.top=y0+'px'; scene.appendChild(c);
+  const sy=Spring(y0,{s:150,d:16},v=>c.style.top=v+'px');
+  const sx=Spring(x0,SPR.smooth,v=>c.style.left=v+'px');
+  const rot=Spring(0,SPR.smooth,v=>c.style.transform='translate(-50%,-50%) rotate('+v+'deg)');
+  hsAfter(30,()=>sy.set(y0-14));                       /* 살짝 떠오름 */
+  hsAfter(220,()=>{ sy.set(y1); sx.set(x1); rot.set(16); });
+  hsAfter(850,()=>{                                    /* 착지: 잔고 보간(500~700ms) + 미세 틱 */
+    const from=hsBal, to=Math.round((hsBal+3.24)*100)/100; hsBal=to;
+    hsTween(bal,from,to,600);
+    const hb=$('hbal'); if(hb){ hb.classList.add('tick'); hsAfter(320,()=>hb.classList.remove('tick')); }
+  });
+  hsAfter(1050,()=>c.remove());
+}
+function hsTween(el,from,to,dur){
+  const steps=Math.max(1,Math.round(dur/40)); let i=0;
+  const iv=setInterval(()=>{ i++; const p=i/steps, e=1-Math.pow(1-p,3);
+    el.textContent=(from+(to-from)*e).toFixed(2);
+    if(i>=steps){ clearInterval(iv); el.textContent=to.toFixed(2); } },40);
+  hsT.push(iv);
+}
+function hsUserPay(){ hsStop(); hsReceive(); hsAfter(3000,()=>{ hsRun=false; hsLoop(); }); }
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) hsStop(); else if($('hcard')&&currentRoute()==='home') heroSceneInit(); });
 function maskUid(u){ return u.length<=4?u:u.slice(0,2)+'*'.repeat(Math.min(u.length-4,7))+u.slice(-2); }
 function resume(){
   if((S.step==='uid'||S.step==='d1') && !S.exchange){ S.step='pick'; save(); } /* 엣지 가드: 거래소 없이 복귀 불가 */
