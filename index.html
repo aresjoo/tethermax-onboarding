@@ -49,11 +49,40 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .logo svg{display:block}
 /* views */
 #views{flex:1;display:flex;flex-direction:column}
-.view{display:none;flex:1;flex-direction:column;padding:8px var(--pad) 96px;animation:vin .24s var(--ease)}
+.view{display:none;flex:1;flex-direction:column;padding:8px var(--pad) 96px}
 .view.on{display:flex}
-@keyframes vin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
-.view.back-anim{animation:vback .24s var(--ease)}
-@keyframes vback{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+/* ═ motion: 토스 레이어 ═ */
+.slot-col{display:inline-block;height:1em;overflow:hidden;vertical-align:top}
+.slot-strip{display:block}
+.slot-strip>span{display:block;height:1em;line-height:1em}
+#views{transition:transform .35s cubic-bezier(.2,.9,.3,1)}
+#views.g-pushed{transform:scale(.97)}
+.money-chip{position:absolute;z-index:45;transform:translate(-50%,-50%);background:var(--surface);border:1px solid var(--line-strong);color:var(--gold);font-weight:700;font-size:15px;padding:9px 14px;border-radius:100px;box-shadow:0 8px 24px rgba(0,0,0,.45);pointer-events:none}
+/* ═ motion: 제미나이 레이어 ═ */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .65s cubic-bezier(.2,.7,0,1),transform .65s cubic-bezier(.2,.7,0,1)}
+.rv.rv-in{opacity:1;transform:none}
+.tlw{display:block;overflow:hidden}
+.tl{display:inline-block;transform:translateY(115%);opacity:0;transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .5s ease}
+.tl.in{transform:none;opacity:1}
+.glow{position:absolute;left:50%;top:38%;width:340px;height:340px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(36,83,240,.32),rgba(36,83,240,0) 68%);animation:breathe 4s ease-in-out infinite;pointer-events:none}
+@keyframes breathe{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
+/* ═ motion: 토스 그래픽 — 살아있는 기프트 ═ */
+#gift{width:96px;height:96px;transform-origin:50% 100%;cursor:pointer}
+#gift.idle{animation:giftIdle 3s ease-in-out infinite}
+@keyframes giftIdle{0%,100%{transform:scale(1)}50%{transform:scale(1.018,0.985)}}
+/* 체크 드로우 */
+.c-ic svg path{stroke-dasharray:20;stroke-dashoffset:0}
+.c-row.just .c-ic{animation:icPop .45s cubic-bezier(.34,1.8,.4,1)}
+.c-row.just .c-ic svg path{animation:icDraw .5s cubic-bezier(.2,.7,0,1) .1s backwards}
+@keyframes icPop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+@keyframes icDraw{from{stroke-dashoffset:20}to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){
+  .tl,.rv{opacity:1;transform:none;transition:none}
+  #gift.idle{animation:none}
+  .glow{animation:none}
+  #views{transition:none}
+  .c-row.just .c-ic,.c-row.just .c-ic svg path{animation:none}
+}
 /* typography helpers */
 .h1{font-size:var(--fs-hero);font-weight:700;line-height:1.32;letter-spacing:-.02em}
 .h2{font-size:var(--fs-title);font-weight:700;line-height:1.35;letter-spacing:-.01em}
@@ -77,7 +106,7 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 .badge{display:inline-flex;align-items:center;background:var(--brand);color:#fff;border-radius:var(--r-badge);padding:3px 7px;font-size:14px;font-weight:600}
 /* progress */
 .pbar{height:6px;border-radius:100px;background:var(--surface-2);overflow:hidden}
-.pbar i{display:block;height:100%;border-radius:100px;background:var(--brand);transition:width .8s var(--ease)}
+.pbar i{display:block;height:100%;border-radius:100px;background:var(--brand)}
 .check{display:flex;flex-direction:column;margin-top:14px}
 .check .c-row{display:flex;align-items:center;gap:10px;min-height:34px;font-size:var(--fs-sub);color:var(--text-3)}
 .check .c-row.done{color:var(--text-2)}
@@ -129,15 +158,15 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 /* sheets */
 #dim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
 #dim.on{opacity:1;pointer-events:auto}
-.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:16px 16px 0 0;padding:24px var(--pad) calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .3s var(--ease);z-index:31}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:16px 16px 0 0;padding:24px var(--pad) calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .38s cubic-bezier(.22,1.12,.3,1);z-index:31;touch-action:none}
 .sheet.on{transform:none}
 .sheet .grip{width:36px;height:4px;border-radius:100px;background:var(--line-strong);margin:0 auto 18px}
 /* toast */
-#toast{position:absolute;left:16px;right:16px;bottom:calc(var(--h-tab) + 20px);background:#2A2E3A;border-radius:8px;padding:13px 16px;font-size:14px;transform:translateY(20px);opacity:0;transition:.28s var(--ease);z-index:40;pointer-events:none;line-height:1.45}
+#toast{position:absolute;left:16px;right:16px;bottom:calc(var(--h-tab) + 20px);background:#2A2E3A;border-radius:8px;padding:13px 16px;font-size:14px;transform:translateY(20px);opacity:0;transition:opacity .22s ease;z-index:40;pointer-events:none;line-height:1.45}
 #toast.on{transform:none;opacity:1}
 /* celebrate overlay */
 #cele{position:absolute;inset:0;background:var(--bg);z-index:35;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px}
-#cele.on{display:flex;animation:vin .3s var(--ease)}
+#cele.on{display:flex}
 /* loading dots */
 .ldots{display:inline-flex;gap:4px;vertical-align:middle}
 .ldots i{width:5px;height:5px;border-radius:50%;background:var(--text-3);animation:ld 1.2s infinite}
@@ -194,10 +223,10 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
   <div id="views">
     <!-- ═══ H. 홈 ═══ -->
     <section class="view" id="v-home">
-      <div class="card" id="progress-box"></div>
-      <div id="test-slot" style="margin-top:12px"></div>
-      <div id="notif-slot"></div>
-      <div style="margin-top:28px">
+      <div class="card rv" id="progress-box"></div>
+      <div class="rv" id="test-slot" style="margin-top:12px"></div>
+      <div class="rv" id="notif-slot"></div>
+      <div class="rv" style="margin-top:28px">
         <div class="section-eyebrow">실시간 페이백</div>
         <div class="h2">지금도 누군가 받고 있어요</div>
         <div class="sub" style="margin-top:4px">쌓인 페이백을 한 푼도 빠짐없이 받아가세요</div>
@@ -388,10 +417,22 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
   <!-- celebrate -->
   <div id="cele">
     <canvas class="fx" id="fx-cele" aria-hidden="true"></canvas>
-    <div style="font-size:44px">🎁</div>
-    <div class="h1" style="margin-top:16px">연결 끝!<br><span class="gold num" id="cele-amt">0</span> <span class="gold">USDT를 받았어요</span></div>
-    <div class="sub" style="margin-top:12px">이제 거래할 때마다 페이백이 자동으로 쌓여요</div>
-    <div class="btn-row" style="width:100%;max-width:320px"><button class="btn btn-p" onclick="celeDone()">내 페이백 보러 가기</button></div>
+    <div class="glow" aria-hidden="true"></div>
+    <div id="gift" aria-hidden="true">
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
+        <defs>
+          <linearGradient id="gbox" x1="14" y1="42" x2="82" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#2E5BF6"/><stop offset="1" stop-color="#0031C6"/></linearGradient>
+          <linearGradient id="glid" x1="8" y1="28" x2="88" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#4A73FF"/><stop offset="1" stop-color="#1D46D6"/></linearGradient>
+        </defs>
+        <rect x="14" y="42" width="68" height="44" rx="9" fill="url(#gbox)"/>
+        <rect x="8" y="28" width="80" height="20" rx="7" fill="url(#glid)"/>
+        <rect x="42" y="28" width="12" height="58" rx="3" fill="#F5C36A"/>
+        <path d="M48 28c-9 0-16-5-14-11 1.8-5.4 10-4 14 5 4-9 12.2-10.4 14-5 2 6-5 11-14 11z" fill="none" stroke="#F5C36A" stroke-width="5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="h1" id="cele-title" style="margin-top:16px"><span class="tlw"><span class="tl">연결 끝!</span></span><span class="tlw"><span class="tl"><span class="gold num" id="cele-amt">0</span> <span class="gold">USDT를 받았어요</span></span></span></div>
+    <div class="sub" id="cele-sub" style="margin-top:12px">이제 거래할 때마다 페이백이 자동으로 쌓여요</div>
+    <div class="btn-row" id="cele-cta" style="width:100%;max-width:320px"><button class="btn btn-p" onclick="celeDone()">내 페이백 보러 가기</button></div>
   </div>
 
   <div id="toast" role="status" aria-live="polite"></div>
@@ -399,6 +440,118 @@ header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;just
 
 <script>
 "use strict";
+/* ═══════════════ motion core — 토스 스프링(만지면) + 제미나이 씬(바라보면) ═══════════════
+   원칙: 모든 터치 반응은 물리 스프링(인터럽터블), 씬 연출은 CSS 커브. duration으로 붙는 트윈 없음. */
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SPR={bouncy:{s:190,d:13},smooth:{s:230,d:26},snappy:{s:520,d:30}};
+function Spring(init,cfg,on){
+  const c=cfg||SPR.smooth;
+  const o={v:init,t:init,vel:0,on:on||null,done:null,_r:null,_last:0};
+  function step(now){
+    let dt=Math.min((now-o._last)/1000,.05); o._last=now;
+    while(dt>0){ const h=Math.min(dt,1/120);
+      o.vel+=(c.s*(o.t-o.v)-c.d*o.vel)*h; o.v+=o.vel*h; dt-=h; }
+    if(o.on)o.on(o.v);
+    if(Math.abs(o.t-o.v)<.004&&Math.abs(o.vel)<.004){ o.v=o.t; o.vel=0; if(o.on)o.on(o.v); o._r=null; if(o.done)o.done(); }
+    else o._r=requestAnimationFrame(step);
+  }
+  o.set=t=>{ o.t=t;
+    if(REDUCED){ o.v=t; o.vel=0; if(o.on)o.on(t); if(o.done)o.done(); return o; }
+    if(!o._r){ o._last=performance.now(); o._r=requestAnimationFrame(step); } return o; };
+  o.jump=v=>{ o.v=o.t=v; o.vel=0; if(o.on)o.on(v); return o; };
+  o.stop=()=>{ if(o._r)cancelAnimationFrame(o._r); o._r=null; };
+  return o;
+}
+/* 슬롯 롤링 숫자 — 각 자릿수가 세로로 굴러 도착 (스프링 오버슛 포함) */
+function slotRoll(el,str,delay){
+  if(!el) return;
+  if(REDUCED){ el.textContent=str; return; }
+  el.innerHTML='';
+  [...String(str)].forEach((ch,i)=>{
+    if(!/\d/.test(ch)){ const s=document.createElement('span'); s.textContent=ch; el.appendChild(s); return; }
+    const col=document.createElement('span'); col.className='slot-col';
+    const strip=document.createElement('span'); strip.className='slot-strip';
+    for(let d=0;d<=9;d++){ const dd=document.createElement('span'); dd.textContent=d; strip.appendChild(dd); }
+    col.appendChild(strip); el.appendChild(col);
+    const sp=Spring(0,SPR.bouncy,v=>strip.style.transform='translateY('+(-v)+'em)');
+    setTimeout(()=>sp.set(+ch),(delay||0)+i*80);
+  });
+}
+/* 전역 버튼 프레스 — pointerdown 즉시 눌리고, 떼면 스프링 복귀 */
+const pressMap=new WeakMap();
+function pressSpring(b){ let sp=pressMap.get(b); if(!sp){ sp=Spring(1,SPR.snappy,v=>b.style.transform='scale('+v.toFixed(4)+')'); pressMap.set(b,sp); } return sp; }
+document.addEventListener('pointerdown',e=>{ const b=e.target.closest('button'); if(b&&!b.disabled&&!REDUCED) pressSpring(b).set(.965); },{passive:true});
+['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,()=>{
+  document.querySelectorAll('button').forEach(b=>{ const sp=pressMap.get(b); if(sp&&sp.t!==1) sp.set(1); });
+},{passive:true}));
+/* FLIP — 리스트가 밀려날 때 순간이동 대신 미끄러짐 */
+function flip(container,mutate){
+  if(REDUCED){ mutate(); return; }
+  const kids=[...container.children];
+  const before=kids.map(k=>k.getBoundingClientRect().top);
+  mutate();
+  kids.forEach((k,i)=>{
+    if(!k.isConnected) return;
+    const d=before[i]-k.getBoundingClientRect().top;
+    if(Math.abs(d)<1) return;
+    const sp=Spring(d,SPR.smooth,v=>k.style.transform='translateY('+v+'px)');
+    sp.done=()=>k.style.transform=''; sp.set(0);
+  });
+}
+/* 타입 리베일 — 문장이 줄 단위로 마스크에서 올라옴 */
+function typeReveal(el){
+  if(!el) return;
+  el.querySelectorAll('.tl').forEach((l,i)=>{
+    l.style.transitionDelay=(i*90)+'ms';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>l.classList.add('in')));
+  });
+}
+/* 젤리 — 눌린 물성 (squash & stretch, 부피 보존 느낌) */
+function jelly(el,amount){
+  if(!el||REDUCED) return;
+  const sp=Spring(1-(amount||0.12),SPR.bouncy,v=>el.style.transform='scale('+(2-v).toFixed(4)+','+v.toFixed(4)+')');
+  sp.done=()=>el.style.transform=''; sp.set(1);
+}
+/* 스크롤 리베일 (홈 섹션, 1회) */
+function initReveals(){
+  const els=[...document.querySelectorAll('#v-home .rv')];
+  els.forEach((e,i)=>e.style.transitionDelay=(i*70)+'ms');
+  if(REDUCED||!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('rv-in')); return; }
+  const io=new IntersectionObserver(es=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add('rv-in'); io.unobserve(x.target); } }),{threshold:.12});
+  els.forEach(e=>io.observe(e));
+}
+/* 바텀시트 드래그 — 손가락 추종, 놓으면 속도 기반 닫힘/복귀 */
+function initSheetDrag(){
+  document.querySelectorAll('.sheet').forEach(sh=>{
+    let sy=0,dy=0,drag=false,lt=0,vy=0;
+    sh.addEventListener('pointerdown',e=>{
+      if(e.target.closest('button,input')||REDUCED) return;
+      drag=true; sy=e.clientY; dy=0; vy=0; lt=performance.now();
+      try{ sh.setPointerCapture(e.pointerId); }catch(_){}
+      sh.style.transition='none';
+    });
+    sh.addEventListener('pointermove',e=>{
+      if(!drag) return;
+      const now=performance.now(), ny=Math.max(0,e.clientY-sy);
+      vy=(ny-dy)/Math.max(now-lt,1); dy=ny; lt=now;
+      sh.style.transform='translateY('+dy+'px)';
+    });
+    ['pointerup','pointercancel'].forEach(ev=>sh.addEventListener(ev,()=>{
+      if(!drag) return; drag=false; sh.style.transition='';
+      if(vy>0.55||dy>sh.offsetHeight*0.34){ sh.style.transform=''; closeTopSheet(); }
+      else { const sp=Spring(dy,SPR.smooth,v=>sh.style.transform='translateY('+Math.max(0,v)+'px)'); sp.done=()=>sh.style.transform=''; sp.set(0); }
+    }));
+  });
+}
+/* 우주 패럴랙스 — 별밭은 콘텐츠보다 느리게 흐름 */
+let _parRaf=null;
+addEventListener('scroll',()=>{
+  if(_parRaf||REDUCED) return;
+  _parRaf=requestAnimationFrame(()=>{ _parRaf=null;
+    const c=document.getElementById('fx-home');
+    if(c) c.style.transform='translateY('+(scrollY*0.55).toFixed(1)+'px)';
+  });
+},{passive:true});
 /* ═══════════════ mock service layer — fake delay는 여기에만 존재 ═══════════════ */
 const EXCHANGES=[
   {id:'wooxpro',n:'WOO X Pro',r:93,c:'#0E0E0E'},{id:'binance',n:'Binance',r:50,c:'#B58A1F'},
@@ -444,22 +597,45 @@ function save(){ try{ localStorage.setItem('tm_state',JSON.stringify(S)); }catch
 function progress(){ return S.firstPayback?100:(S.linked?75:50); }
 function exName(){ return S.exchange?S.exchange.n:'거래소'; }
 const $=id=>document.getElementById(id);
-function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2800); }
+function toast(m){
+  const t=$('toast'); t.textContent=m; t.classList.add('on');
+  if(!REDUCED){ if(!t._sp) t._sp=Spring(90,SPR.bouncy,v=>t.style.transform='translateY('+v+'px)'); t._sp.jump(90); t._sp.set(0); }
+  clearTimeout(t._h); t._h=setTimeout(()=>{ if(t._sp)t._sp.set(90); t.classList.remove('on'); },2800);
+}
 /* ═══════════════ router (hash) — 뒤로가기 = 브라우저 back ═══════════════ */
 const ROUTES=['home','w1','w2','w3','pick','uid','d1','d2'];
 function go(route,replace){
   if(replace) location.replace('#'+route); else location.hash=route;
 }
 function currentRoute(){ const h=location.hash.replace('#',''); return ROUTES.includes(h)?h:'home'; }
-let lastIdx=0;
+/* 홈으로 — 이미 홈이면 직접 렌더, 아니면 라우터가 1회만 렌더 (이중 렌더 방지) */
+function goHome(){ if(currentRoute()==='home'){ render(); } else { go('home',true); } }
+let lastIdx=0, curView=null, lastPct=null, justCheck=-1;
 window.addEventListener('hashchange',render);
 function render(){
   closeAllSheets(true);
   const r=currentRoute();
   const idx=ROUTES.indexOf(r);
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on','back-anim'));
   const el=$('v-'+r);
-  el.classList.add('on'); if(idx<lastIdx) el.classList.add('back-anim');
+  const prev=curView&&curView!==el&&curView.classList.contains('on')?curView:null;
+  document.querySelectorAll('.view').forEach(v=>{ if(v!==el&&v!==prev){ v.classList.remove('on'); v.style.cssText=''; } });
+  if(prev&&!REDUCED){
+    /* 토스식 push/pop — 나가는 화면은 밀려나며 딤, 들어오는 화면은 스프링 슬라이드 */
+    const back=idx<lastIdx;
+    if(prev._tx)prev._tx.stop(); if(el._tx)el._tx.stop();
+    prev.style.position='absolute'; prev.style.inset='0'; prev.style.zIndex='2'; prev.style.background='var(--bg)';
+    prev._tx=Spring(0,SPR.smooth,v=>{ prev.style.transform='translateX('+v+'px)'; prev.style.opacity=String(Math.max(0,1-Math.abs(v)/110)); });
+    prev._tx.done=()=>{ prev.classList.remove('on'); prev.style.cssText=''; };
+    prev._tx.set(back?110:-80);
+    el.classList.add('on'); el.style.opacity='0';
+    el._tx=Spring(back?-46:64,SPR.smooth,v=>{ el.style.transform='translateX('+v+'px)'; el.style.opacity=String(Math.max(0,1-Math.abs(v)/90)); });
+    el._tx.done=()=>{ el.style.transform=''; el.style.opacity=''; };
+    el._tx.set(0);
+  } else {
+    if(prev){ prev.classList.remove('on'); prev.style.cssText=''; }
+    el.classList.add('on');
+  }
+  curView=el;
   lastIdx=idx;
   /* step 기억(중단 복귀) */
   if(['pick','uid','d1','d2'].includes(r)){ S.step=r; save(); } /* 홈 복귀 시에도 step 유지 → 이어서 하기 */
@@ -476,8 +652,9 @@ function render(){
 function checklist(){
   const items=[['계정 생성',true],['본인 확인',true],['UID 연결',S.linked],['첫 페이백',S.firstPayback]];
   let nowSet=false;
-  return '<div class="check">'+items.map(([t,done])=>{
+  return '<div class="check">'+items.map(([t,done],i)=>{
     let cls=done?'done':''; if(!done&&!nowSet){cls='now';nowSet=true;}
+    if(done&&i===justCheck) cls+=' just';
     return '<div class="c-row '+cls+'"><span class="c-ic">'+(done?'<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>':'')+'</span>'+t+'</div>';
   }).join('')+'</div>';
 }
@@ -499,10 +676,17 @@ function renderHome(){
     cta='<button class="btn btn-p" style="margin-top:16px" onclick="openSheet(\'ask\')">계정 연결하기</button>';
   }
   box.innerHTML=
-    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><span class="meta">페이백 시작하기</span><b class="num" style="font-size:15px">'+p+'%</b></div>'+
-    '<div class="pbar"><i style="width:'+p+'%"></i></div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><span class="meta">페이백 시작하기</span><b class="num" id="prog-pct" style="font-size:15px">'+p+'%</b></div>'+
+    '<div class="pbar"><i id="prog-bar" style="width:'+(lastPct===null?p:lastPct)+'%"></i></div>'+
     checklist()+head+cta+
     (S.linked?balanceCard():'');
+  /* 프로그레스 스프링 — 오버슛 후 안착, %는 슬롯 롤링 */
+  if(!REDUCED&&lastPct!==null&&lastPct!==p){
+    const bar=$('prog-bar');
+    Spring(lastPct,SPR.bouncy,v=>bar.style.width=Math.max(0,Math.min(100,v))+'%').set(p);
+    slotRoll($('prog-pct'),p+'%');
+  }
+  lastPct=p; justCheck=-1;
   /* 테스트 슬롯 */
   const ts=$('test-slot');
   if(S.tested){
@@ -567,12 +751,17 @@ async function runCalc(){
   r.innerHTML=
     '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">'+
     '<div class="meta">'+wEx.n+' · 페이백률 '+wEx.r+'%</div>'+
-    '<div class="h1" style="margin-top:10px">매달 이만큼<br>받을 수 있어요</div>'+
+    '<div class="h1" id="w3-title" style="margin-top:10px"><span class="tlw"><span class="tl">매달 이만큼</span></span><span class="tlw"><span class="tl">받을 수 있어요</span></span></div>'+
     '<div style="display:flex;align-items:baseline;gap:8px;justify-content:center;margin-top:18px"><b class="num" id="w3-amt" style="font-size:44px;letter-spacing:-.02em">0</b><span style="font-size:20px;font-weight:700">USDT</span></div>'+
     '<div class="sub" style="margin-top:14px">지금까지는 전부 거래소에 남던 돈이에요.<br>계정 하나만 연결하면 회원님께 돌아와요.</div>'+
     '</div>'+
     '<div class="btn-row"><button class="btn btn-p" onclick="afterWizard()">지금 연결하고 받기</button><button class="btn-t" style="margin:2px auto 0" onclick="go(\'home\')">나중에 할게요</button></div>';
-  countUp($('w3-amt'),res.monthly,900);
+  /* 시네마틱 포즈(0.4s 정적) → 타입 리베일 → 슬롯 롤링 */
+  if(REDUCED){ $('w3-amt').textContent=res.monthly.toLocaleString(); }
+  else {
+    setTimeout(()=>typeReveal($('w3-title')),420);
+    setTimeout(()=>slotRoll($('w3-amt'),res.monthly.toLocaleString()),840);
+  }
   renderHome();
 }
 function afterWizard(){ go('home'); setTimeout(()=>openSheet('ask'),350); }
@@ -611,16 +800,35 @@ async function submitUid(){
     err.classList.add('on');
   }
 }
+/* 성공 모먼트 5박자: ①우주 버스트 ②기프트 젤리 착지 ③타입 리베일 ④슬롯 롤링 ⑤CTA 페이드 */
 function openCele(){
   $('cele').classList.add('on');
   if(celeFx) celeFx.kill();
   celeFx=Cosmos($('fx-cele'),{count:1700,alpha:1,burst:true,cy:0.42,holeW:120,holeH:150});
-  countUp($('cele-amt'),30,900);
+  const g=$('gift'),title=$('cele-title'),sub=$('cele-sub'),cta=$('cele-cta');
+  title.querySelectorAll('.tl').forEach(l=>l.classList.remove('in'));
+  $('cele-amt').textContent='0';
+  if(REDUCED){
+    title.querySelectorAll('.tl').forEach(l=>l.classList.add('in'));
+    $('cele-amt').textContent='30'; return;
+  }
+  [sub,cta].forEach(e=>{ e.style.opacity='0'; e.style.transform='translateY(14px)'; });
+  g.classList.remove('idle');
+  const js=Spring(0.25,SPR.bouncy,v=>{ g.style.transform='scale('+(1.55-0.55*v).toFixed(3)+','+v.toFixed(3)+')'; });
+  js.done=()=>{ g.style.transform=''; g.classList.add('idle'); };
+  setTimeout(()=>js.set(1),80);
+  setTimeout(()=>typeReveal(title),320);
+  setTimeout(()=>slotRoll($('cele-amt'),'30'),760);
+  [[sub,1060],[cta,1220]].forEach(([e,d])=>setTimeout(()=>{
+    const sp=Spring(14,SPR.smooth,v=>{ e.style.transform='translateY('+v+'px)'; e.style.opacity=String(1-v/14); });
+    sp.done=()=>{ e.style.transform=''; e.style.opacity=''; }; sp.set(0);
+  },d));
 }
 function celeDone(){
   $('cele').classList.remove('on');
   if(celeFx){ celeFx.kill(); celeFx=null; }
-  go('home',true); render();
+  justCheck=2; /* 체크 드로우 + 프로그레스 오버슛(75%)이 홈 렌더에서 이어짐 */
+  goHome();
 }
 /* ═══════════════ D. 가입 왕복 ═══════════════ */
 function copyCode(btn){
@@ -644,17 +852,18 @@ const sheetStack=[];
 function openSheet(id){
   const el=$('sh-'+id); if(!el) return;
   el.classList.add('on'); $('dim').classList.add('on');
+  $('views').classList.add('g-pushed'); /* 토스식: 뒤 화면이 살짝 물러남 */
   sheetStack.push(id);
 }
 function closeTopSheet(){
   if(!sheetStack.length) return;
   const id=sheetStack.pop();
   $('sh-'+id).classList.remove('on');
-  if(!sheetStack.length) $('dim').classList.remove('on');
+  if(!sheetStack.length){ $('dim').classList.remove('on'); $('views').classList.remove('g-pushed'); }
 }
 function closeAllSheets(){
   while(sheetStack.length){ const id=sheetStack.pop(); $('sh-'+id).classList.remove('on'); }
-  $('dim').classList.remove('on');
+  $('dim').classList.remove('on'); $('views').classList.remove('g-pushed');
 }
 /* ═══════════════ live payouts ═══════════════ */
 function payoutRow(p,isNew){
@@ -666,8 +875,10 @@ function startLive(){
   const box=$('live-rows');
   box.innerHTML=Array.from({length:5},()=>payoutRow(MockAPI.makePayout(),false)).join('');
   setInterval(()=>{
-    box.insertAdjacentHTML('afterbegin',payoutRow(MockAPI.makePayout(),true));
-    while(box.children.length>5) box.lastElementChild.remove();
+    flip(box,()=>{ /* 기존 행은 FLIP으로 미끄러지고, 새 행은 rowin */
+      box.insertAdjacentHTML('afterbegin',payoutRow(MockAPI.makePayout(),true));
+      while(box.children.length>5) box.lastElementChild.remove();
+    });
   },4500);
 }
 /* ═══════════════ util ═══════════════ */
@@ -690,12 +901,35 @@ function demoReset(){ localStorage.removeItem('tm_state'); location.hash=''; loc
 function demoPreset(k){
   if(k==='tested'){ S.tested=true; S.predicted=500; }
   if(k==='notif'){ S.notif='on'; }
-  if(k==='payback'){
-    if(!S.linked){ S.linked=true; S.bonus=30; S.balance=30; S.exchange=S.exchange||EXCHANGES[3]; S.uid=S.uid||'68543217'; }
-    S.firstPayback=true; S.balance=Math.round((S.balance+12.47)*100)/100;
+  if(k==='payback'){ demoPayback(); return; }
+  save(); closeAllSheets(); goHome();
+}
+/* 첫 페이백 — 금액 칩이 위에서 잔고로 날아와 젤리 착지 후 잔고가 굴러 올라감 */
+function demoPayback(){
+  if(!S.linked){ S.linked=true; S.bonus=30; S.balance=30; S.exchange=S.exchange||EXCHANGES[3]; S.uid=S.uid||'68543217'; }
+  save(); closeAllSheets(); goHome();
+  const amt=12.47, newBal=Math.round((S.balance+amt)*100)/100;
+  const land=()=>{
+    S.firstPayback=true; S.balance=newBal; justCheck=3; save();
+    if(currentRoute()==='home') render();
+    const nb=$('bal-num');
+    if(nb){ slotRoll(nb,newBal.toFixed(2)); jelly(nb.parentElement,0.06); }
     toast('페이백 12.47 USDT가 도착했어요');
-  }
-  save(); closeTopSheet(); go('home',true); render();
+  };
+  setTimeout(()=>{ /* 라우터 렌더가 끝난 뒤 잔고 위치를 잡는다 */
+    const target=$('bal-num');
+    if(REDUCED||!target){ land(); return; }
+    const chip=document.createElement('div');
+    chip.className='money-chip num'; chip.textContent='+12.47 USDT';
+    $('app').appendChild(chip);
+    const ar=$('app').getBoundingClientRect(), tr=target.getBoundingClientRect();
+    const x0=ar.width/2, y0=70, x1=tr.left-ar.left+tr.width/2, y1=tr.top-ar.top+tr.height/2;
+    chip.style.left=x0+'px'; chip.style.top=y0+'px';
+    const sy=Spring(y0,SPR.bouncy,v=>chip.style.top=v+'px');
+    const sx=Spring(x0,SPR.smooth,v=>chip.style.left=v+'px');
+    sy.done=()=>{ chip.remove(); land(); };
+    setTimeout(()=>{ sy.set(y1); sx.set(x1); },380);
+  },80);
 }
 /* ═══════════════ cosmos — Gemini풍 인터랙티브 파티클 우주 (canvas 2D, 라이브러리 없음) ═══════════════ */
 function Cosmos(canvas, opts){
@@ -737,8 +971,13 @@ function Cosmos(canvas, opts){
         a:(0.35+Math.random()*0.5)*o.alpha, ph:Math.random()*6.28, tw:0.6+Math.random()*1.4});
     }
   }
+  let _lastF=0,_slow=0,_chk=0,_shifted=false;
   function frame(){
     if(killed) return;
+    /* 저사양 자동 다운시프트: 120프레임 중 40프레임 이상이 26ms 초과면 파티클 40% 감축 (1회) */
+    const _now=performance.now();
+    if(_lastF){ if(_now-_lastF>26) _slow++; if(++_chk>=120){ if(_slow>40&&!_shifted){ _shifted=true; o.count=Math.floor(o.count*0.6); make(); } _slow=0; _chk=0; } }
+    _lastF=_now;
     t+=0.016;
     ctx.clearRect(0,0,W,H);
     const px=(mouse.x>-999?(mouse.x-W/2):0), py=(mouse.y>-999?(mouse.y-H*o.cy):0);
@@ -780,6 +1019,9 @@ startLive();
 homeFx=Cosmos($('fx-home'),{count:1100,alpha:0.55,cy:0.5,holeW:60,holeH:80});
 if(!location.hash) location.replace('#home');
 render();
+initSheetDrag();
+initReveals();
+$('gift').addEventListener('pointerdown',()=>{ const g=$('gift'); g.classList.remove('idle'); jelly(g,0.16); setTimeout(()=>g.classList.add('idle'),700); });
 </script>
 </body>
 </html>
