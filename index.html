@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TetherMax</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* ═══════════════ design-tokens (유일한 값 출처 — TETHERMAX_UI_AUDIT.md 실측) ═══════════════ */
+:root{
+  --bg:#121721;
+  --surface:#1D2028;
+  --surface-2:#232732;
+  --line:rgba(255,255,255,.08);
+  --line-strong:rgba(255,255,255,.227);
+  --text:#ffffff;
+  --text-2:rgba(255,255,255,.70);
+  --text-3:rgba(255,255,255,.45);
+  --brand:#2453F0;
+  --brand-hover:#1D46D6;
+  --brand-deep:#0031C6;
+  --brand-soft:rgba(36,83,240,.12);
+  --gold:#F5C36A;
+  --green:#00A68A;
+  --error:#F44336;
+  --font:"Wanted Sans Variable","Wanted Sans",Inter,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --fs-hero:28px; --fs-title:20px; --fs-body:16px; --fs-sub:14px; --fs-meta:12px;
+  --r-btn:4px; --r-card:12px; --r-chip:100px; --r-badge:6px;
+  --h-btn:44px; --h-input:56px; --h-row:56px; --h-header:56px; --h-tab:56px;
+  --pad:20px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+/* ═══════════════ base ═══════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#0B0D12;font-family:var(--font);color:var(--text);font-size:var(--fs-body);line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input{font-family:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.num{font-variant-numeric:tabular-nums}
+/* phone frame */
+#app{position:relative;max-width:390px;margin:0 auto;min-height:100dvh;background:var(--bg);display:flex;flex-direction:column}
+@media(min-width:431px){ #app{border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06);box-shadow:0 0 60px rgba(0,0,0,.5)} }
+/* header */
+header{height:var(--h-header);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);position:sticky;top:0;background:rgba(18,23,33,.92);backdrop-filter:blur(8px);z-index:20}
+.logo{display:flex;align-items:center;gap:7px;font-weight:700;font-size:17px;letter-spacing:-.01em;user-select:none}
+.logo svg{display:block}
+/* views */
+#views{flex:1;display:flex;flex-direction:column}
+.view{display:none;flex:1;flex-direction:column;padding:8px var(--pad) 96px;animation:vin .24s var(--ease)}
+.view.on{display:flex}
+@keyframes vin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.view.back-anim{animation:vback .24s var(--ease)}
+@keyframes vback{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+/* typography helpers */
+.h1{font-size:var(--fs-hero);font-weight:700;line-height:1.32;letter-spacing:-.02em}
+.h2{font-size:var(--fs-title);font-weight:700;line-height:1.35;letter-spacing:-.01em}
+.sub{font-size:var(--fs-sub);color:var(--text-2);line-height:1.55}
+.meta{font-size:var(--fs-meta);color:var(--text-3)}
+.gold{color:var(--gold);font-weight:700}
+/* card */
+.card{background:var(--surface);border-radius:var(--r-card);padding:18px}
+.card+.card{margin-top:12px}
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:var(--h-btn);border-radius:var(--r-btn);font-size:15px;font-weight:500;transition:background .15s,opacity .15s}
+.btn:active{opacity:.85}
+.btn-p{background:var(--brand);color:#fff}
+.btn-p:hover{background:var(--brand-hover)}
+.btn-p:disabled{background:var(--surface-2);color:var(--text-3);cursor:default}
+.btn-s{background:var(--surface);border:1px solid var(--line-strong);color:var(--text)}
+.btn-t{width:auto;height:36px;padding:0 8px;color:var(--text-2);font-size:var(--fs-sub);font-weight:500}
+.btn-t:hover{color:var(--text)}
+.btn-row{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+/* rate badge */
+.badge{display:inline-flex;align-items:center;background:var(--brand);color:#fff;border-radius:var(--r-badge);padding:3px 7px;font-size:14px;font-weight:600}
+/* progress */
+.pbar{height:6px;border-radius:100px;background:var(--surface-2);overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:100px;background:var(--brand);transition:width .8s var(--ease)}
+.check{display:flex;flex-direction:column;margin-top:14px}
+.check .c-row{display:flex;align-items:center;gap:10px;min-height:34px;font-size:var(--fs-sub);color:var(--text-3)}
+.check .c-row.done{color:var(--text-2)}
+.check .c-row.now{color:var(--text);font-weight:600}
+.c-ic{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line-strong)}
+.c-row.done .c-ic{border:none;background:var(--brand)}
+.c-row.now .c-ic{border-color:var(--brand)}
+.c-row.now .c-ic::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand)}
+/* exchange grid */
+.exg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.exc{background:var(--surface);border-radius:var(--r-card);padding:16px 14px;display:flex;flex-direction:column;gap:10px;border:1px solid transparent;transition:border-color .15s;text-align:left}
+.exc:active{border-color:var(--brand)}
+.exc .top{display:flex;align-items:center;gap:9px}
+.exi{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.exc .nm{font-size:15px;font-weight:600}
+.exc .rt{display:flex;align-items:center;justify-content:space-between}
+.exc .rt .meta{font-size:11px}
+/* input */
+.field{margin-top:20px}
+.field label{display:block;font-size:var(--fs-sub);color:var(--text-2);margin-bottom:8px}
+.inp{position:relative}
+.inp input{width:100%;height:var(--h-input);border-radius:var(--r-btn);background:var(--bg);border:1px solid var(--line-strong);padding:0 92px 0 14px;font-size:17px;outline:none;letter-spacing:.02em}
+.inp input:focus{border-color:var(--brand)}
+.inp input.err{border-color:var(--error)}
+.inp .paste{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:36px;padding:0 12px;border-radius:var(--r-btn);background:var(--surface-2);font-size:13px;font-weight:500;color:var(--text-2)}
+.field .help{margin-top:8px;font-size:var(--fs-meta);color:var(--text-3)}
+.field .errmsg{margin-top:8px;font-size:13px;color:var(--error);line-height:1.5;display:none}
+.field .errmsg.on{display:block}
+/* table (실시간 지급) */
+.tbl{background:var(--surface);border-radius:var(--r-card);overflow:hidden}
+.tbl .thead{display:grid;grid-template-columns:1fr 64px 78px 52px;gap:4px;padding:10px 14px;background:var(--surface-2);font-size:11px;color:var(--text-3)}
+.trow{display:grid;grid-template-columns:1fr 64px 78px 52px;gap:4px;align-items:center;padding:0 14px;height:48px;border-top:1px solid var(--line);font-size:13px}
+.trow.new{animation:rowin .4s var(--ease)}
+@keyframes rowin{from{opacity:0;transform:translateY(-6px)}to{opacity:1}}
+.trow .amt{font-weight:600;text-align:right}
+.trow .st{display:flex;align-items:center;gap:4px;justify-content:flex-end;color:var(--brand);font-size:12px}
+.trow .st i{width:5px;height:5px;border-radius:50%;background:var(--brand)}
+/* telegram banner */
+.tg{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:var(--r-card);padding:14px 16px;margin-top:12px}
+.tg .ic{width:38px;height:38px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tg .tx{flex:1;min-width:0}
+/* tabbar */
+#tabbar{position:sticky;bottom:0;height:calc(var(--h-tab) + env(safe-area-inset-bottom));background:rgba(18,23,33,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:20}
+#tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;color:var(--text-3)}
+#tabbar button.on{color:var(--brand)}
+#tabbar svg{stroke:currentColor}
+/* floating support */
+#support{position:absolute;right:16px;bottom:calc(var(--h-tab) + 16px + env(safe-area-inset-bottom));width:48px;height:48px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(36,83,240,.4);z-index:19}
+/* sheets */
+#dim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
+#dim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:16px 16px 0 0;padding:24px var(--pad) calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .3s var(--ease);z-index:31}
+.sheet.on{transform:none}
+.sheet .grip{width:36px;height:4px;border-radius:100px;background:var(--line-strong);margin:0 auto 18px}
+/* toast */
+#toast{position:absolute;left:16px;right:16px;bottom:calc(var(--h-tab) + 20px);background:#2A2E3A;border-radius:8px;padding:13px 16px;font-size:14px;transform:translateY(20px);opacity:0;transition:.28s var(--ease);z-index:40;pointer-events:none;line-height:1.45}
+#toast.on{transform:none;opacity:1}
+/* celebrate overlay */
+#cele{position:absolute;inset:0;background:var(--bg);z-index:35;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px}
+#cele.on{display:flex;animation:vin .3s var(--ease)}
+/* loading dots */
+.ldots{display:inline-flex;gap:4px;vertical-align:middle}
+.ldots i{width:5px;height:5px;border-radius:50%;background:var(--text-3);animation:ld 1.2s infinite}
+.ldots i:nth-child(2){animation-delay:.15s}.ldots i:nth-child(3){animation-delay:.3s}
+@keyframes ld{0%,60%,100%{opacity:.25}30%{opacity:1}}
+/* spin */
+.spin{width:44px;height:44px;border-radius:50%;border:3px solid var(--surface-2);border-top-color:var(--brand);animation:sp 1s linear infinite;margin:0 auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* linked uid row */
+.luid{display:flex;align-items:center;gap:11px;padding:12px 0;border-top:1px solid var(--line)}
+.luid .u{font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px}
+.luid .u i{width:5px;height:5px;border-radius:50%;background:var(--text-3)}
+/* volume chips */
+.vchips{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.vchip{background:var(--surface);border:1px solid transparent;border-radius:var(--r-card);padding:16px;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:border-color .15s}
+.vchip:active{border-color:var(--brand)}
+/* code card */
+.code-card{background:var(--surface);border-radius:var(--r-card);padding:20px;text-align:center;margin-top:20px}
+.code-card .code{font-size:26px;font-weight:700;letter-spacing:.14em;margin:6px 0 2px}
+/* wizard nav (테더맥스 예외: 뒤로/다음) */
+.wnav{display:flex;gap:10px;margin-top:auto;padding-top:20px}
+.wnav .btn{flex:1}
+/* back arrow row */
+.nav-row{display:flex;align-items:center;gap:6px;min-height:40px;margin:0 0 4px -8px}
+.nav-row button{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--text-2)}
+/* notice line */
+.safe{display:flex;align-items:flex-start;gap:7px;margin-top:14px;font-size:var(--fs-meta);color:var(--text-3);line-height:1.5}
+.safe svg{flex-shrink:0;margin-top:1px}
+/* pulse dot */
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pu 1.8s infinite}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.35}}
+.section-eyebrow{font-size:13px;font-weight:600;color:var(--brand);margin-bottom:6px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo" id="logo" role="button" aria-label="TetherMax">
+      <svg width="26" height="14" viewBox="0 0 52 28" fill="none"><path d="M14 4c5 0 7.5 3.5 12 10s7 10 12 10c6.6 0 10-4.5 10-10S44.6 4 38 4c-5 0-7.5 3.5-12 10s-7 10-12 10C7.4 24 4 19.5 4 14S7.4 4 14 4z" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>
+      TetherMax
+    </div>
+    <span class="meta" id="hdr-right"></span>
+  </header>
+
+  <div id="views">
+    <!-- ═══ H. 홈 ═══ -->
+    <section class="view" id="v-home">
+      <div class="card" id="progress-box"></div>
+      <div id="test-slot" style="margin-top:12px"></div>
+      <div id="notif-slot"></div>
+      <div style="margin-top:28px">
+        <div class="section-eyebrow">실시간 페이백</div>
+        <div class="h2">지금도 누군가 받고 있어요</div>
+        <div class="sub" style="margin-top:4px">쌓인 페이백을 한 푼도 빠짐없이 받아가세요</div>
+        <div class="tbl" style="margin-top:14px">
+          <div class="thead"><span>UID</span><span>거래소</span><span style="text-align:right">페이백</span><span style="text-align:right">상태</span></div>
+          <div id="live-rows"></div>
+        </div>
+        <button class="tg" onclick="toast('데모 화면에서는 채널이 열리지 않아요 — 실제 앱에서 연결돼요')">
+          <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3L2 10l6 3M22 3l-4 17-7-6M22 3L8 13"/></svg></span>
+          <span class="tx"><span style="font-size:14px;font-weight:600;display:block">방금 받은 내역이 올라와요</span><span class="meta">텔레그램 실시간 페이백 채널</span></span>
+          <span class="meta" style="color:var(--brand);font-weight:600;flex-shrink:0">채널 보기</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ═══ W. 페이백 테스트 위저드 ═══ -->
+    <section class="view" id="v-w1">
+      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="meta">예상 페이백 확인 1/2</span></div>
+      <div class="h1">먼저, 가장 자주 쓰는<br>거래소를 골라 주세요</div>
+      <div class="exg" id="w-exg"></div>
+    </section>
+    <section class="view" id="v-w2">
+      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="meta">예상 페이백 확인 2/2</span></div>
+      <div class="h1">한 달에 얼마나<br>거래하세요?</div>
+      <div class="sub" style="margin-top:8px">대략이면 충분해요</div>
+      <div class="vchips" id="w-vol"></div>
+    </section>
+    <section class="view" id="v-w3">
+      <div id="w3-loading" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px">
+        <div class="spin"></div>
+        <div><div style="font-weight:600">페이백을 계산하고 있어요</div><div class="sub" style="margin-top:4px">거래소 수수료 기준으로 계산해요</div></div>
+      </div>
+      <div id="w3-result" style="display:none;flex:1;flex-direction:column"></div>
+    </section>
+
+    <!-- ═══ B. 거래소 선택 ═══ -->
+    <section class="view" id="v-pick">
+      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+      <div class="h1" id="pick-title">어느 거래소를<br>연결할까요?</div>
+      <div class="sub" style="margin-top:8px" id="pick-sub">추천 코드로 가입한 거래소를 골라 주세요</div>
+      <div class="exg" id="pick-exg"></div>
+    </section>
+
+    <!-- ═══ C. UID 입력 ═══ -->
+    <section class="view" id="v-uid">
+      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+      <div id="uid-form">
+        <div class="h1"><span id="uid-ex">거래소</span> UID를<br>알려주세요</div>
+        <div class="sub" style="margin-top:8px">UID는 거래소 회원번호예요 <button class="btn-t" style="color:var(--brand);height:auto;padding:0 2px" onclick="openSheet('uidhelp')">어디서 보나요?</button></div>
+        <div class="field">
+          <div class="inp">
+            <input id="uid-input" inputmode="numeric" placeholder="예: 68543217" autocomplete="off" aria-label="UID 입력">
+            <button class="paste" onclick="pasteUid()">붙여넣기</button>
+          </div>
+          <div class="help">보통 6자리 이상 숫자예요</div>
+          <div class="errmsg" id="uid-err"></div>
+        </div>
+        <div class="safe"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>조회만 해요 — 출금 권한은 요청하지 않아요</div>
+        <div class="btn-row"><button class="btn btn-p" id="uid-submit" disabled onclick="submitUid()">UID 연결하기</button></div>
+      </div>
+      <div id="uid-loading" style="display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px">
+        <div class="spin"></div>
+        <div><div style="font-weight:600">거래소에 확인하고 있어요</div><div class="sub" style="margin-top:4px">10초면 끝나요</div></div>
+      </div>
+      <div id="uid-noref" style="display:none;flex:1;flex-direction:column;justify-content:center;text-align:center">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--surface);margin:0 auto 18px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg></div>
+        <div class="h2">이 계정은 추천 코드 없이<br>가입된 계정이에요</div>
+        <div class="sub" style="margin-top:10px">괜찮아요 — 3분이면 새 계정으로 받을 수 있어요</div>
+        <div class="btn-row">
+          <button class="btn btn-p" onclick="S.pickMode='signup';go('d1')">새 계정 만들러 가기</button>
+          <button class="btn btn-s" onclick="showUidForm()">다른 UID 입력하기</button>
+          <button class="btn-t" style="margin:4px auto 0" onclick="toast('고객센터는 24시간 열려 있어요 — 실제 앱에서 연결돼요')">고객센터에 물어보기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ D-1. 가입 준비 ═══ -->
+    <section class="view" id="v-d1">
+      <div class="nav-row"><button onclick="history.back()" aria-label="뒤로"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+      <div class="h1">추천 코드를<br>복사해 두세요</div>
+      <div class="sub" style="margin-top:8px">가입할 때 자동으로 입력돼요 · 복사해 두면 안심이에요</div>
+      <div class="code-card">
+        <div class="meta">TetherMax 추천 코드</div>
+        <div class="code num">TETHERMAX</div>
+        <button class="btn btn-s" style="margin-top:14px" onclick="copyCode(this)">코드 복사</button>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div style="font-size:14px;font-weight:600" id="d1-ex-line">가입 순서</div>
+        <div class="check" style="margin-top:6px">
+          <div class="c-row done"><span class="c-ic"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span>추천 코드 복사</div>
+          <div class="c-row now"><span class="c-ic"></span>거래소에서 가입하기 (3분)</div>
+          <div class="c-row"><span class="c-ic"></span>돌아와서 UID 연결하기</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="d1-go" onclick="goSignup()">가입하러 가기</button>
+      </div>
+      <div class="meta" style="text-align:center;margin-top:10px">3분 정도 걸려요 · 이 화면은 저장돼요</div>
+    </section>
+
+    <!-- ═══ D-2. 복귀 대기 ═══ -->
+    <section class="view" id="v-d2">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+        <div class="h1">가입하고 오셨나요?</div>
+        <div class="sub" style="margin-top:10px">천천히 하셔도 돼요 — 여기서 기다리고 있을게요</div>
+        <div class="btn-row" style="margin-top:28px">
+          <button class="btn btn-p" onclick="go('uid')">가입 완료했어요, UID 연결하기</button>
+          <button class="btn btn-s" onclick="go('d1',true)">아직이에요</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- tabbar -->
+  <nav id="tabbar" aria-label="탭바(미리보기)">
+    <button class="on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg>홈</button>
+    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M17 6.5C17 5 15 4 12 4s-5 1-5 2.5S9 9 12 9s5 1 5 2.5S15 14 12 14s-5-1-5-2.5"/><circle cx="12" cy="12" r="9.5" stroke-opacity=".4"/></svg>페이백</button>
+    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8s-1-4-4-4-3 4 0 4h4zm0 0s1-4 4-4 3 4 0 4h-4z"/></svg>혜택</button>
+    <button onclick="toast('미리보기 버전이에요 — 실제 앱에서 열려요')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>전체</button>
+  </nav>
+
+  <button id="support" aria-label="고객센터" onclick="toast('고객센터는 24시간 열려 있어요 — 실제 앱에서 연결돼요')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/><path d="M19 19a4 4 0 0 1-4 2h-2"/></svg>
+  </button>
+
+  <!-- dim + sheets -->
+  <div id="dim" onclick="closeTopSheet()"></div>
+
+  <div class="sheet" id="sh-ask" role="dialog" aria-modal="true">
+    <div class="grip"></div>
+    <div class="h2">테더맥스 추천 코드로 가입한<br>거래소 계정이 있나요?</div>
+    <div class="sub" style="margin-top:8px">추천 코드로 가입된 계정만 페이백을 받을 수 있어요</div>
+    <div class="btn-row">
+      <button class="btn btn-p" onclick="closeTopSheet();S.pickMode='link';save();go('pick')">있어요, 연결할게요</button>
+      <button class="btn btn-s" onclick="closeTopSheet();S.pickMode='signup';save();go('pick')">아직 없어요 — 3분이면 만들 수 있어요</button>
+    </div>
+  </div>
+
+  <div class="sheet" id="sh-uidhelp" role="dialog" aria-modal="true">
+    <div class="grip"></div>
+    <div class="h2">UID는 여기서 볼 수 있어요</div>
+    <div class="sub" style="margin-top:8px">거래소 앱을 열고 프로필 화면 맨 위를 확인해 주세요</div>
+    <div class="card" style="background:var(--bg);margin-top:16px">
+      <div class="meta">거래소 앱 → 프로필</div>
+      <div style="display:flex;align-items:center;gap:11px;margin-top:12px">
+        <span class="exi" style="background:#2B3139">B</span>
+        <div><div style="font-size:14px;font-weight:600">내 계정</div><div class="meta num" style="margin-top:2px">UID 68543217 ← 이 숫자예요</div></div>
+      </div>
+    </div>
+    <div class="btn-row"><button class="btn btn-p" onclick="closeTopSheet()">UID 입력하러 가기</button></div>
+  </div>
+
+  <div class="sheet" id="sh-withdraw" role="dialog" aria-modal="true">
+    <div class="grip"></div>
+    <div class="h2">조금만 더 모으면<br>출금할 수 있어요</div>
+    <div class="card" style="background:var(--bg);margin-top:16px">
+      <div style="display:flex;justify-content:space-between;font-size:14px"><span class="sub">지금 잔고</span><b class="num">30.00 USDT</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-top:10px"><span class="sub">출금 기준</span><b class="num">10 USDT 이상</b></div>
+    </div>
+    <div class="sub" style="margin-top:14px">가입 보너스는 거래 페이백이 쌓이면 함께 출금돼요. 첫 거래부터 페이백이 자동으로 쌓여요.</div>
+    <div class="btn-row"><button class="btn btn-p" onclick="closeTopSheet();toast('거래소는 실제 앱에서 열려요 — 거래하면 페이백이 자동으로 쌓여요')">거래하고 페이백 쌓기</button></div>
+  </div>
+
+  <div class="sheet" id="sh-notif" role="dialog" aria-modal="true">
+    <div class="grip"></div>
+    <div style="text-align:center;padding:6px 0 2px">
+      <div class="h2">TetherMax에서 알림을<br>보내려고 해요</div>
+      <div class="sub" style="margin-top:8px">페이백이 도착하면 바로 알려드려요</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-p" onclick="notifAllow(true)">허용</button>
+      <button class="btn btn-s" onclick="notifAllow(false)">안 함</button>
+    </div>
+  </div>
+
+  <div class="sheet" id="sh-demo" role="dialog" aria-modal="true">
+    <div class="grip"></div>
+    <div class="h2">데모 패널</div>
+    <div class="meta" style="margin-top:6px">시연용 · UID 규칙: 9로 시작=추천 코드 미적용 · 00으로 끝=미등록 · 그 외=성공</div>
+    <div class="btn-row">
+      <button class="btn btn-s" onclick="demoReset()">신규 유저로 리셋</button>
+      <button class="btn btn-s" onclick="demoPreset('tested')">페이백 테스트 완료 유저</button>
+      <button class="btn btn-s" onclick="demoPreset('notif')">알림 켠 유저</button>
+      <button class="btn btn-s" onclick="demoPreset('payback')">첫 페이백 도착 시뮬레이션</button>
+    </div>
+  </div>
+
+  <!-- celebrate -->
+  <div id="cele">
+    <div style="font-size:44px">🎁</div>
+    <div class="h1" style="margin-top:16px">연결 끝!<br><span class="gold num" id="cele-amt">0</span> <span class="gold">USDT를 받았어요</span></div>
+    <div class="sub" style="margin-top:12px">이제 거래할 때마다 페이백이 자동으로 쌓여요</div>
+    <div class="btn-row" style="width:100%;max-width:320px"><button class="btn btn-p" onclick="celeDone()">내 페이백 보러 가기</button></div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+"use strict";
+/* ═══════════════ mock service layer — fake delay는 여기에만 존재 ═══════════════ */
+const EXCHANGES=[
+  {id:'wooxpro',n:'WOO X Pro',r:93,c:'#0E0E0E'},{id:'binance',n:'Binance',r:50,c:'#B58A1F'},
+  {id:'bybit',n:'Bybit',r:64,c:'#2B3139'},{id:'bitget',n:'Bitget',r:77,c:'#0A6E7C'},
+  {id:'okx',n:'OKX',r:65,c:'#1B1B1B'},{id:'gate',n:'Gate',r:75,c:'#1E4DD8'},
+  {id:'flipster',n:'Flipster',r:70,c:'#5A2ECC'},{id:'deepcoin',n:'DeepCoin',r:75,c:'#B33B3B'},
+  {id:'lbank',n:'LBank',r:71,c:'#C7A23C'},{id:'bitunix',n:'Bitunix',r:75,c:'#1F7A4D'},
+  {id:'htx',n:'HTX',r:54,c:'#1F5FBF'}
+];
+const VOLS=[
+  {label:'5천만 원 미만',sub:'가볍게 하는 편이에요',v:45},
+  {label:'5천만 ~ 3억 원',sub:'꾸준히 하는 편이에요',v:180},
+  {label:'3억 ~ 10억 원',sub:'자주, 크게 해요',v:500},
+  {label:'10억 원 이상',sub:'전업에 가까워요',v:1400}
+];
+const MockAPI={
+  delay:(ms)=>new Promise(r=>setTimeout(r,ms)),
+  async verifyUid(exId,uid){
+    await this.delay(2500);
+    if(uid.startsWith('9')) return {ok:false,code:'NO_REFERRAL'};
+    if(uid.endsWith('00')) return {ok:false,code:'NOT_FOUND'};
+    return {ok:true};
+  },
+  async calcPayback(exId,volIdx){
+    await this.delay(1600);
+    const ex=EXCHANGES.find(e=>e.id===exId)||EXCHANGES[3];
+    return {monthly:Math.round(VOLS[volIdx].v*(ex.r/77))};
+  },
+  makePayout(){
+    const ex=EXCHANGES[Math.floor(Math.random()*6)];
+    const a=Math.floor(Math.random()*90+100000), b=Math.floor(Math.random()*90+10);
+    const uid=String(a).slice(0,2)+'*****'+String(a).slice(-2);
+    const amt=(Math.random()*70+8).toFixed(2);
+    const d=new Date();
+    return {uid,ex,amt,t:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+  }
+};
+/* ═══════════════ state ═══════════════ */
+const DEF={step:'home',exchange:null,pickMode:'link',linked:false,bonus:0,tested:false,predicted:0,notif:'off',firstPayback:false,balance:0};
+let S=load();
+function load(){ try{ const s=JSON.parse(localStorage.getItem('tm_state')); return s?Object.assign({},DEF,s):Object.assign({},DEF);}catch(e){return Object.assign({},DEF);} }
+function save(){ try{ localStorage.setItem('tm_state',JSON.stringify(S)); }catch(e){} }
+function progress(){ return S.firstPayback?100:(S.linked?75:50); }
+function exName(){ return S.exchange?S.exchange.n:'거래소'; }
+const $=id=>document.getElementById(id);
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2800); }
+/* ═══════════════ router (hash) — 뒤로가기 = 브라우저 back ═══════════════ */
+const ROUTES=['home','w1','w2','w3','pick','uid','d1','d2'];
+function go(route,replace){
+  if(replace) location.replace('#'+route); else location.hash=route;
+}
+function currentRoute(){ const h=location.hash.replace('#',''); return ROUTES.includes(h)?h:'home'; }
+let lastIdx=0;
+window.addEventListener('hashchange',render);
+function render(){
+  closeAllSheets(true);
+  const r=currentRoute();
+  const idx=ROUTES.indexOf(r);
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on','back-anim'));
+  const el=$('v-'+r);
+  el.classList.add('on'); if(idx<lastIdx) el.classList.add('back-anim');
+  lastIdx=idx;
+  /* step 기억(중단 복귀) */
+  if(['pick','uid','d1','d2'].includes(r)){ S.step=r; save(); } /* 홈 복귀 시에도 step 유지 → 이어서 하기 */
+  if(r==='home') renderHome();
+  if(r==='w1') renderWizardEx();
+  if(r==='w2') renderVols();
+  if(r==='w3') runCalc();
+  if(r==='pick') renderPick();
+  if(r==='uid') { $('uid-ex').textContent=exName(); showUidForm(); }
+  if(r==='d1') $('d1-go').textContent=exName()+' 가입하러 가기';
+  window.scrollTo(0,0);
+}
+/* ═══════════════ H. 홈 ═══════════════ */
+function checklist(){
+  const items=[['계정 생성',true],['본인 확인',true],['UID 연결',S.linked],['첫 페이백',S.firstPayback]];
+  let nowSet=false;
+  return '<div class="check">'+items.map(([t,done])=>{
+    let cls=done?'done':''; if(!done&&!nowSet){cls='now';nowSet=true;}
+    return '<div class="c-row '+cls+'"><span class="c-ic">'+(done?'<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>':'')+'</span>'+t+'</div>';
+  }).join('')+'</div>';
+}
+function renderHome(){
+  const p=progress();
+  const box=$('progress-box');
+  const resumable=['pick','uid','d1','d2'].includes(S.step)&&!S.linked;
+  let head='',cta='';
+  if(S.firstPayback){
+    head='<div class="h2">모든 설정이 끝났어요</div><div class="sub" style="margin-top:6px">이제 전부 자동이에요 — 거래할수록 쌓여요</div>';
+  } else if(S.linked){
+    head='<div class="h2">첫 페이백만 남았어요</div><div class="sub" style="margin-top:6px">거래하면 자동으로 쌓여요 — 따로 할 일은 없어요</div>';
+  } else if(resumable){
+    const msg=S.step==='uid'?exName()+' UID 입력만 남았어요':S.step==='pick'?'거래소 선택만 남았어요':'거래소 가입만 남았어요';
+    head='<div class="h2">이어서 하기</div><div class="sub" style="margin-top:6px">'+msg+'</div>';
+    cta='<button class="btn btn-p" style="margin-top:16px" onclick="resume()">이어서 하기</button>';
+  } else {
+    head='<div class="h2">이제 1분이면 돼요</div><div class="sub" style="margin-top:6px">🎁 계정만 연결해도 <span class="gold">30 USDT</span>를 바로 드려요</div>';
+    cta='<button class="btn btn-p" style="margin-top:16px" onclick="openSheet(\'ask\')">계정 연결하기</button>';
+  }
+  box.innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><span class="meta">페이백 시작하기</span><b class="num" style="font-size:15px">'+p+'%</b></div>'+
+    '<div class="pbar"><i style="width:'+p+'%"></i></div>'+
+    checklist()+head+cta+
+    (S.linked?balanceCard():'');
+  /* 테스트 슬롯 */
+  const ts=$('test-slot');
+  if(S.tested){
+    ts.innerHTML='<div class="card"><div class="meta">회원님의 월 예상 페이백</div>'+
+      '<div style="display:flex;align-items:baseline;gap:6px;margin-top:6px"><b class="num" style="font-size:26px">'+S.predicted.toLocaleString()+'</b><span style="font-weight:600">USDT</span></div>'+
+      '<div class="sub" style="margin-top:6px">'+(S.linked?'연결 완료 — 거래하면 이 금액이 현실이 돼요':'지금은 <b style="color:var(--text)">0 USDT</b> 받는 중이에요 — 연결하면 바로 시작돼요')+'</div></div>';
+  } else {
+    ts.innerHTML='<button class="card" style="width:100%;text-align:left;display:flex;align-items:center;gap:12px" onclick="go(\'w1\')">'+
+      '<span style="flex:1"><span style="font-size:15px;font-weight:600;display:block">내 예상 페이백 확인하기</span><span class="meta">1분이면 돼요 · 지금 놓치는 금액도 알 수 있어요</span></span>'+
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>';
+  }
+  /* 알림 슬롯 (연동 후에만) */
+  const ns=$('notif-slot');
+  if(!S.linked){ ns.innerHTML=''; }
+  else if(S.notif==='on'){
+    ns.innerHTML='<div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:0 4px" class="meta"><span style="width:5px;height:5px;border-radius:50%;background:var(--brand)"></span>알림이 켜져 있어요 · 페이백이 도착하면 바로 알려드려요</div>';
+  } else {
+    ns.innerHTML='<div class="card" style="margin-top:12px;display:flex;align-items:center;gap:12px">'+
+      '<span style="flex:1"><span style="font-size:15px;font-weight:600;display:block">페이백이 도착하면 알려드릴게요</span><span class="meta" id="notif-sub">'+(S.notifDenied?'알림 대신 텔레그램 채널로도 받아볼 수 있어요':'놓치지 않게 도착 즉시 알려드려요')+'</span></span>'+
+      '<button class="btn btn-p" style="width:auto;height:36px;padding:0 14px;font-size:13px;flex-shrink:0" onclick="openSheet(\'notif\')">알림 받기</button></div>';
+  }
+}
+function balanceCard(){
+  return '<div style="border-top:1px solid var(--line);margin-top:18px;padding-top:16px">'+
+    '<div class="meta">내 페이백 잔고</div>'+
+    '<div style="display:flex;align-items:baseline;gap:6px;margin-top:4px"><b class="num" id="bal-num" style="font-size:30px">'+S.balance.toFixed(2)+'</b><span style="font-weight:600">USDT</span></div>'+
+    '<div class="meta" style="margin-top:4px">🎁 가입 보너스 +30 USDT · '+(S.firstPayback?'페이백 +'+(S.balance-30).toFixed(2)+' USDT':'방금')+'</div>'+
+    (S.exchange?'<div class="luid" style="margin-top:14px"><span class="exi" style="background:'+S.exchange.c+'">'+S.exchange.n[0]+'</span><span style="flex:1"><span style="font-size:14px;font-weight:600;display:block">'+S.exchange.n+'</span><span class="u"><i></i>UID '+maskUid(S.uid||'68543217')+'</span></span><span class="meta" style="color:var(--brand)">연결됨</span></div>':'')+
+    '<button class="btn btn-s" style="margin-top:12px" onclick="openSheet(\'withdraw\')">출금하기</button></div>';
+}
+function maskUid(u){ return u.length<=4?u:u.slice(0,2)+'*'.repeat(Math.min(u.length-4,7))+u.slice(-2); }
+function resume(){
+  if((S.step==='uid'||S.step==='d1') && !S.exchange){ S.step='pick'; save(); } /* 엣지 가드: 거래소 없이 복귀 불가 */
+  go(S.step);
+}
+/* ═══════════════ 거래소 그리드 ═══════════════ */
+function exGrid(elId,onPick){
+  $(elId).innerHTML=EXCHANGES.map((e,i)=>'<button class="exc" data-i="'+i+'"><span class="top"><span class="exi" style="background:'+e.c+'">'+e.n[0]+'</span><span class="nm">'+e.n+'</span></span><span class="rt"><span class="meta">최종 페이백률</span><span class="badge num">'+e.r+'%</span></span></button>').join('');
+  $(elId).querySelectorAll('.exc').forEach(b=>b.onclick=()=>onPick(EXCHANGES[+b.dataset.i]));
+}
+function renderPick(){
+  $('pick-title').innerHTML=S.pickMode==='signup'?'어느 거래소로<br>시작할까요?':'어느 거래소를<br>연결할까요?';
+  $('pick-sub').textContent=S.pickMode==='signup'?'페이백률이 높은 순서예요':'추천 코드로 가입한 거래소를 골라 주세요';
+  exGrid('pick-exg',(e)=>{ S.exchange=e; save(); go(S.pickMode==='signup'?'d1':'uid'); });
+}
+/* ═══════════════ W. 위저드 ═══════════════ */
+let wEx=null;
+function renderWizardEx(){ exGrid('w-exg',(e)=>{ wEx=e; go('w2'); }); }
+function renderVols(){
+  if(!wEx) { go('w1',true); return; }
+  $('w-vol').innerHTML=VOLS.map((v,i)=>'<button class="vchip" data-i="'+i+'"><span><span style="font-size:15px;font-weight:600;display:block">'+v.label+'</span><span class="meta">'+v.sub+'</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>').join('');
+  $('w-vol').querySelectorAll('.vchip').forEach(b=>b.onclick=()=>{ wVol=+b.dataset.i; go('w3'); });
+}
+let wVol=1;
+async function runCalc(){
+  if(!wEx){ go('w1',true); return; }
+  $('w3-loading').style.display='flex'; $('w3-result').style.display='none';
+  const res=await MockAPI.calcPayback(wEx.id,wVol);
+  S.tested=true; S.predicted=res.monthly; save();
+  $('w3-loading').style.display='none';
+  const r=$('w3-result'); r.style.display='flex';
+  r.innerHTML=
+    '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">'+
+    '<div class="meta">'+wEx.n+' · 페이백률 '+wEx.r+'%</div>'+
+    '<div class="h1" style="margin-top:10px">매달 이만큼<br>받을 수 있어요</div>'+
+    '<div style="display:flex;align-items:baseline;gap:8px;justify-content:center;margin-top:18px"><b class="num" id="w3-amt" style="font-size:44px;letter-spacing:-.02em">0</b><span style="font-size:20px;font-weight:700">USDT</span></div>'+
+    '<div class="sub" style="margin-top:14px">지금까지는 전부 거래소에 남던 돈이에요.<br>계정 하나만 연결하면 회원님께 돌아와요.</div>'+
+    '</div>'+
+    '<div class="btn-row"><button class="btn btn-p" onclick="afterWizard()">지금 연결하고 받기</button><button class="btn-t" style="margin:2px auto 0" onclick="go(\'home\')">나중에 할게요</button></div>';
+  countUp($('w3-amt'),res.monthly,900);
+  renderHome();
+}
+function afterWizard(){ go('home'); setTimeout(()=>openSheet('ask'),350); }
+/* ═══════════════ C. UID ═══════════════ */
+function showUidForm(){
+  $('uid-form').style.display='block'; $('uid-loading').style.display='none'; $('uid-noref').style.display='none';
+  const inp=$('uid-input'); inp.value=''; inp.classList.remove('err'); $('uid-err').classList.remove('on'); $('uid-submit').disabled=true;
+}
+$('uid-input')?void 0:0;
+document.addEventListener('input',e=>{
+  if(e.target.id!=='uid-input') return;
+  const v=e.target.value.trim();
+  const err=$('uid-err');
+  if(v && !/^\d*$/.test(v)){ e.target.classList.add('err'); err.textContent='숫자만 입력해 주세요'; err.classList.add('on'); $('uid-submit').disabled=true; return; }
+  e.target.classList.remove('err'); err.classList.remove('on');
+  $('uid-submit').disabled=v.length<6;
+});
+async function pasteUid(){
+  try{ const t=await navigator.clipboard.readText(); if(t&&/^\d{6,}$/.test(t.trim())){ $('uid-input').value=t.trim(); $('uid-input').dispatchEvent(new Event('input',{bubbles:true})); toast('붙여넣었어요'); return; } }catch(e){}
+  $('uid-input').focus(); toast('UID를 직접 입력해 주세요');
+}
+async function submitUid(){
+  const uid=$('uid-input').value.trim();
+  $('uid-form').style.display='none'; $('uid-loading').style.display='flex';
+  const res=await MockAPI.verifyUid(S.exchange?S.exchange.id:'',uid);
+  $('uid-loading').style.display='none';
+  if(res.ok){
+    S.uid=uid; S.linked=true; S.bonus=30; S.balance=30; S.step='home'; save();
+    openCele();
+  } else if(res.code==='NO_REFERRAL'){
+    $('uid-noref').style.display='flex';
+  } else {
+    $('uid-form').style.display='block';
+    const err=$('uid-err'); $('uid-input').classList.add('err');
+    err.innerHTML='등록되지 않은 UID예요. 다시 확인해 주세요.<br><span style="color:var(--text-3)">보통 6자리 이상 숫자예요 · 프로필 화면에서 볼 수 있어요</span>';
+    err.classList.add('on');
+  }
+}
+function openCele(){
+  $('cele').classList.add('on');
+  countUp($('cele-amt'),30,900);
+}
+function celeDone(){ $('cele').classList.remove('on'); go('home',true); render(); }
+/* ═══════════════ D. 가입 왕복 ═══════════════ */
+function copyCode(btn){
+  const done=()=>{ btn.textContent='복사했어요'; setTimeout(()=>btn.textContent='코드 복사',1800); toast('추천 코드를 복사했어요 — 가입할 때 자동으로 입력돼요'); };
+  try{ navigator.clipboard.writeText('TETHERMAX').then(done,done); }catch(e){ done(); }
+}
+function goSignup(){
+  S.step='d2'; save();
+  window.open('https://tethermax.io/ko/affiliated','_blank');
+  go('d2');
+}
+/* ═══════════════ 알림 ═══════════════ */
+function notifAllow(yes){
+  closeTopSheet();
+  if(yes){ S.notif='on'; S.notifDenied=false; save(); toast('알림을 켰어요 — 첫 페이백 도착도 바로 알 수 있어요'); }
+  else { S.notifDenied=true; save(); toast('괜찮아요 — 텔레그램 채널로도 받아볼 수 있어요'); }
+  renderHome();
+}
+/* ═══════════════ sheets ═══════════════ */
+const sheetStack=[];
+function openSheet(id){
+  const el=$('sh-'+id); if(!el) return;
+  el.classList.add('on'); $('dim').classList.add('on');
+  sheetStack.push(id);
+}
+function closeTopSheet(){
+  if(!sheetStack.length) return;
+  const id=sheetStack.pop();
+  $('sh-'+id).classList.remove('on');
+  if(!sheetStack.length) $('dim').classList.remove('on');
+}
+function closeAllSheets(){
+  while(sheetStack.length){ const id=sheetStack.pop(); $('sh-'+id).classList.remove('on'); }
+  $('dim').classList.remove('on');
+}
+/* ═══════════════ live payouts ═══════════════ */
+function payoutRow(p,isNew){
+  return '<div class="trow'+(isNew?' new':'')+'"><span class="num" style="color:var(--text-2)">'+p.uid+'</span>'+
+    '<span><span class="exi" style="width:22px;height:22px;font-size:10px;background:'+p.ex.c+'">'+p.ex.n[0]+'</span></span>'+
+    '<span class="amt num">'+p.amt+' <span style="font-size:10px;color:var(--text-3);font-weight:400">USDT</span></span><span class="st"><i></i>완료</span></div>';
+}
+function startLive(){
+  const box=$('live-rows');
+  box.innerHTML=Array.from({length:5},()=>payoutRow(MockAPI.makePayout(),false)).join('');
+  setInterval(()=>{
+    box.insertAdjacentHTML('afterbegin',payoutRow(MockAPI.makePayout(),true));
+    while(box.children.length>5) box.lastElementChild.remove();
+  },4500);
+}
+/* ═══════════════ util ═══════════════ */
+function countUp(el,to,dur){
+  const t0=performance.now();
+  function f(now){
+    const p=Math.min((now-t0)/dur,1), e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(to*e).toLocaleString();
+    if(p<1) requestAnimationFrame(f);
+  }
+  requestAnimationFrame(f);
+}
+/* ═══════════════ demo panel (로고 5탭) ═══════════════ */
+let tapCount=0,tapTimer=null;
+$('logo').addEventListener('click',()=>{
+  tapCount++; clearTimeout(tapTimer); tapTimer=setTimeout(()=>tapCount=0,1600);
+  if(tapCount>=5){ tapCount=0; openSheet('demo'); }
+});
+function demoReset(){ localStorage.removeItem('tm_state'); location.hash=''; location.reload(); }
+function demoPreset(k){
+  if(k==='tested'){ S.tested=true; S.predicted=500; }
+  if(k==='notif'){ S.notif='on'; }
+  if(k==='payback'){
+    if(!S.linked){ S.linked=true; S.bonus=30; S.balance=30; S.exchange=S.exchange||EXCHANGES[3]; S.uid=S.uid||'68543217'; }
+    S.firstPayback=true; S.balance=Math.round((S.balance+12.47)*100)/100;
+    toast('페이백 12.47 USDT가 도착했어요');
+  }
+  save(); closeTopSheet(); go('home',true); render();
+}
+/* ═══════════════ boot ═══════════════ */
+startLive();
+if(!location.hash) location.replace('#home');
+render();
+</script>
+</body>
+</html>
